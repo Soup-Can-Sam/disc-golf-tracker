@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disc Golf Putting Tracker</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRGlzYyBHb2xmIFB1dHRpbmcgVHJhY2tlciIsInNob3J0X25hbWUiOiJQdXR0aW5nIFRyYWNrZXIiLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiM2NjdlZWEiLCJ0aGVtZV9jb2xvciI6IiMyRThCNTciLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCMmFXVjNRbTk0UFNJd0lEQWdOVEV5SURVeE1pSWdlRzFzYm5NOUltaDBkSEE2THk5M2QzY3Vkek11YjNKbkx6SXdNREF2YzNabklpQkdkbTlqYTJOdmJHOXlQU0k5SWo0OGNtVmpkQ0JtYVd4c1BTSWpOelZrWW1FbklpQjNhV1IwYUQwaU5URXlJaUJvWldsbmFIUTlJalV4TWlJdlBqeDBaWGgwSUdacGJHdzlJaU5tWm1ZaUlIZ3BRak0xSXlSemNHRnVJSGc5SWpFME1pSWdlVDBpTXprd0lpSWdabTl1ZEMxemFYcGxQU0kwTUNJK1BIUjBjWEJoYmtSeVAxeDRNa005SWtacGNtVk1hV3hsVDFKa1pYSXFQand2ZEhkNGRHRnVQand2ZEhSNGRHRnVQand2ZEhSNGRHRnVQand2YzNabkBgIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19">
+    <meta name="theme-color" content="#2E8B57">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Putting Tracker">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2E8B57, #3CB371);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .sync-status {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .sync-status.online {
+            background: rgba(76, 175, 80, 0.8);
+        }
+
+        .sync-status.offline {
+            background: rgba(255, 152, 0, 0.8);
+        }
+
+        .sync-status.syncing {
+            background: rgba(33, 150, 243, 0.8);
+        }
+
+        .install-prompt {
+            background: #2196F3;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            display: none;
+        }
+
+        /* Tab Navigation */
+        .tab-container {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: white;
+            color: #2E8B57;
+            border-bottom: 3px solid #2E8B57;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .setup-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .setup-section h3 {
+            color: #2E8B57;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #2E8B57;
+        }
+
+        .set-button {
+            width: 100%;
+            padding: 12px;
+            background: #2E8B57;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .set-button:hover {
+            background: #236B47;
+        }
+
+        .current-session {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2E8B57;
+            margin-bottom: 20px;
+        }
+
+        .session-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .session-info span {
+            font-weight: 600;
+            color: #2E8B57;
+        }
+
+        .quick-log {
+            margin-bottom: 30px;
+        }
+
+        .quick-log h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .makes-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .makes-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .log-set-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .log-set-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .log-set-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stats h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 1px solid #f5c6cb;
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .preset-btn {
+            padding: 8px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .preset-btn:hover {
+            background: #5a6268;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            padding: 20px;
+        }
+
+        .distance-selector {
+            margin-bottom: 20px;
+        }
+
+        .distance-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .distance-btn {
+            padding: 10px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .distance-btn.active {
+            background: #2E8B57;
+        }
+
+        .distance-btn:hover {
+            opacity: 0.8;
+        }
+
+        .chart-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 200px;
+        }
+
+        .chart-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
+        }
+
+        .session-list {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .session-info-dash {
+            flex: 1;
+        }
+
+        .session-date {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .session-details {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .session-percentage {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2E8B57;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+
+        .offline-data-indicator {
+            background: #fff3cd;
+            color: #856404;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 12px;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🥏 Putting Tracker</h1>
+            <p>Rapid-fire disc golf putting logger</p>
+            <div id="syncStatus" class="sync-status online">●</div>
+        </div>
+        
+        <div id="installPrompt" class="install-prompt">
+            📱 Install this app for better experience! Tap here.
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <button class="tab active" onclick="showTab('logging')">Log Putts</button>
+            <button class="tab" onclick="showTab('dashboard')">Dashboard</button>
+        </div>
+        
+        <!-- Logging Tab Content -->
+        <div id="logging" class="tab-content active">
+            <div class="content">
+                <div id="offlineIndicator" class="offline-data-indicator hidden">
+                    📡 Offline mode - data will sync when online
+                </div>
+                
+                <!-- Setup Section -->
+                <div class="setup-section">
+                    <h3>Session Setup</h3>
+                    <div class="input-group">
+                        <label for="distance">Distance (feet)</label>
+                        <input type="number" id="distance" placeholder="15" min="1" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label for="puttsPerSet">Putts per Set</label>
+                        <input type="number" id="puttsPerSet" placeholder="5" min="1" max="20">
+                    </div>
+                    <div class="input-group">
+                        <label for="sessionId">Session ID (optional)</label>
+                        <input type="text" id="sessionId" placeholder="Practice 1">
+                    </div>
+                    <button class="set-button" onclick="startSession()">Start Session</button>
+                </div>
+
+                <!-- Current Session Display -->
+                <div id="currentSession" class="current-session hidden">
+                    <div class="session-info">
+                        <span>Distance: <span id="currentDistance"></span> ft</span>
+                        <span>Per Set: <span id="currentPutts"></span> putts</span>
+                    </div>
+                    <div class="session-info">
+                        <span>Session: <span id="currentSessionId"></span></span>
+                        <button onclick="endSession()" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">Change Setup</button>
+                    </div>
+                </div>
+
+                <!-- Success/Error Messages -->
+                <div id="messageArea"></div>
+
+                <!-- Quick Logging Section -->
+                <div id="quickLogSection" class="quick-log hidden">
+                    <h3>Log Makes</h3>
+                    
+                    <!-- Preset Buttons -->
+                    <div class="preset-buttons">
+                        <button class="preset-btn" onclick="setMakes(0)">0</button>
+                        <button class="preset-btn" onclick="setMakes(1)">1</button>
+                        <button class="preset-btn" onclick="setMakes(2)">2</button>
+                        <button class="preset-btn" onclick="setMakes(3)">3</button>
+                        <button class="preset-btn" onclick="setMakes(4)">4</button>
+                        <button class="preset-btn" onclick="setMakes(5)">5</button>
+                    </div>
+                    
+                    <div class="makes-input">
+                        <input type="number" id="makes" placeholder="Makes" min="0" max="20">
+                        <button class="log-set-btn" onclick="logSet()">Log Set</button>
+                    </div>
+                </div>
+
+                <!-- Session Stats -->
+                <div id="sessionStats" class="stats hidden">
+                    <h4>Session Stats</h4>
+                    <div class="stat-row">
+                        <span>Sets Logged:</span>
+                        <span id="setsCount">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Total Attempts:</span>
+                        <span id="totalAttempts">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Total Makes:</span>
+                        <span id="totalMakes">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Session Average:</span>
+                        <span id="sessionAverage">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dashboard Tab Content -->
+        <div id="dashboard" class="tab-content">
+            <div class="dashboard">
+                <h3>Putting Analytics</h3>
+                
+                <!-- Distance Selector -->
+                <div class="distance-selector">
+                    <h4>Select Distance:</h4>
+                    <div class="distance-buttons">
+                        <button class="distance-btn active" onclick="selectDistance(10)">10ft</button>
+                        <button class="distance-btn" onclick="selectDistance(15)">15ft</button>
+                        <button class="distance-btn" onclick="selectDistance(25)">25ft</button>
+                        <button class="distance-btn" onclick="selectDistance(30)">30ft</button>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="chart-container">
+                    <div class="chart-title" id="chartTitle">10ft Putting Progress</div>
+                    <div id="chartContent">
+                        <div class="loading">Loading data...</div>
+                    </div>
+                </div>
+
+                <!-- Session Summary -->
+                <div class="session-list">
+                    <h4>Recent Sessions</h4>
+                    <div id="sessionSummary">
+                        <div class="loading">Loading sessions...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // AIRTABLE CONFIGURATION - ADD YOUR DETAILS HERE
+        const AIRTABLE_CONFIG = {
+            token: 'patxAPVJwZGU2MzBp.48d1cad399a2d2828c580359041b696941140740f3e7bcf40f7215fba4ae7045',
+            baseId: 'appeDfMb9yDopLacN',
+            tableName: 'Table 1'
+        };
+
+        let selectedDistance = 10;
+        let dashboardData = [];
+        let isOnline = navigator.onLine;
+        let deferredPrompt;
+
+        let currentSessionData = {
+            distance: 0,
+            puttsPerSet: 0,
+            sessionId: '',
+            sets: [],
+            isActive: false
+        };
+
+        // PWA Install functionality
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').style.display = 'block';
+        });
+
+        document.getElementById('installPrompt').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('installPrompt').style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:application/javascript;base64,Y29uc3QgQ0FDSEVfTkFNRSA9ICdkaXNjLWdvbGYtcHV0dGluZy12MSc7DQpjb25zdCB1cmxzVG9DYWNoZSA9IFsNCiAgJy4vJywNCiAgJy4vaW5kZXguaHRtbCcNCl07DQoNCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignaW5zdGFsbCcsIGV2ZW50ID0+IHsNCiAgZXZlbnQud2FpdFVudGlsKA0KICAgIGNhY2hlcy5vcGVuKENBQ0hFX05BTUUpDQogICAgICAudGhlbihjYWNoZSA9PiBjYWNoZS5hZGRBbGwodXJsc1RvQ2FjaGUpKQ0KICApOw0KfSk7DQoNCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignZmV0Y2gnLCBldmVudCA9PiB7DQogIGV2ZW50LnJlc3BvbmRXaXRoKA0KICAgIGNhY2hlcy5tYXRjaChldmVudC5yZXF1ZXN0KQ0KICAgICAgLnRoZW4ocmVzcG9uc2UgPT4gew0KICAgICAgICBpZiAocmVzcG9uc2UpIHsNCiAgICAgICAgICByZXR1cm4gcmVzcG9uc2U7DQogICAgICAgIH0NCiAgICAgICAgcmV0dXJuIGZldGNoKGV2ZW50LnJlcXVlc3QpOw0KICAgICAgfSkNCiAgKTsNCn0pOw==')
+              .then(() => console.log('Service Worker registered'))
+              .catch(err => console.log('Service Worker registration failed'));
+        }
+
+        // Online/Offline Detection
+        function updateOnlineStatus() {
+            isOnline = navigator.onLine;
+            const statusEl = document.getElementById('syncStatus');
+            const offlineIndicator = document.getElementById('offlineIndicator');
+            
+            if (isOnline) {
+                statusEl.textContent = '●';
+                statusEl.className = 'sync-status online';
+                statusEl.title = 'Online';
+                offlineIndicator.classList.add('hidden');
+                syncOfflineData();
+            } else {
+                statusEl.textContent = '●';
+                statusEl.className = 'sync-status offline';
+                statusEl.title = 'Offline';
+                offlineIndicator.classList.remove('hidden');
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Offline Data Management
+        function saveOfflineData(record) {
+            const offlineData = JSON.parse(localStorage.getItem('offlineData') || '[]');
+            offlineData.push({
+                ...record,
+                timestamp: Date.now(),
+                id: Math.random().toString(36).substr(2, 9)
+            });
+            localStorage.setItem('offlineData', JSON.stringify(offlineData));
+        }
+
+        function getOfflineData() {
+            return JSON.parse(localStorage.getItem('offlineData') || '[]');
+        }
+
+        function clearOfflineData() {
+            localStorage.removeItem('offlineData');
+        }
+
+        async function syncOfflineData() {
+            const offlineData = getOfflineData();
+            if (offlineData.length === 0) return;
+
+            const statusEl = document.getElementById('syncStatus');
+            statusEl.textContent = '↻';
+            statusEl.className = 'sync-status syncing';
+            statusEl.title = 'Syncing...';
+
+            try {
+                for (const record of offlineData) {
+                    const { id, timestamp, ...cleanRecord } = record;
+                    await saveToAirtable(cleanRecord);
+                }
+                clearOfflineData();
+                statusEl.textContent = '●';
+                statusEl.className = 'sync-status online';
+                statusEl.title = 'Synced';
+                showMessage(`Synced ${offlineData.length} offline records!`, 'success');
+            } catch (error) {
+                console.error('Sync failed:', error);
+                statusEl.textContent = '●';
+                statusEl.className = 'sync-status offline';
+                statusEl.title = 'Sync failed';
+            }
+        }
+
+        // Tab switching functionality
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'dashboard') {
+                loadDashboardData();
+            }
+        }
+
+        // Distance selection for dashboard
+        function selectDistance(distance) {
+            selectedDistance = distance;
+            
+            document.querySelectorAll('.distance-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            updateChart();
+            updateSessions();
+        }
+
+        // Load data from Airtable for dashboard
+        async function loadDashboardData() {
+            try {
+                const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
+                const data = await response.json();
+                dashboardData = data.records.map(record => ({
+                    date: record.fields.Date,
+                    distance: record.fields.Distance,
+                    puttsPerSet: record.fields['Putts Per Set'],
+                    makes: record.fields.Makes,
+                    percentage: record.fields['Make Percentage'] || (record.fields.Makes / record.fields['Putts Per Set'] * 100),
+                    sessionId: record.fields['Session ID']
+                }));
+
+                updateChart();
+                updateSessions();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                document.getElementById('chartContent').innerHTML = '<div class="no-data">Error loading data</div>';
+                document.getElementById('sessionSummary').innerHTML = '<div class="no-data">Error loading sessions</div>';
+            }
+        }
+
+        // Update chart for selected distance
+        function updateChart() {
+            const distanceData = dashboardData.filter(d => d.distance === selectedDistance);
+            
+            document.getElementById('chartTitle').textContent = `${selectedDistance}ft Putting Progress`;
+            
+            if (distanceData.length === 0) {
+                document.getElementById('chartContent').innerHTML = '<div class="no-data">No data for this distance yet</div>';
+                return;
+            }
+
+            const sessionAverages = {};
+            distanceData.forEach(record => {
+                if (!sessionAverages[record.sessionId]) {
+                    sessionAverages[record.sessionId] = {
+                        date: record.date,
+                        totalMakes: 0,
+                        totalAttempts: 0,
+                        sessionId: record.sessionId
+                    };
+                }
+                sessionAverages[record.sessionId].totalMakes += record.makes;
+                sessionAverages[record.sessionId].totalAttempts += record.puttsPerSet;
+            });
+
+            const chartData = Object.values(sessionAverages).map(session => ({
+                date: session.date,
+                percentage: (session.totalMakes / session.totalAttempts * 100).toFixed(1),
+                sessionId: session.sessionId
+            })).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            const maxPercentage = Math.max(...chartData.map(d => parseFloat(d.percentage)), 100);
+            const chartHeight = 150;
+            const chartWidth = 300;
+            
+            let chartHTML = `
+                <div style="position: relative; width: ${chartWidth}px; height: ${chartHeight + 40}px; margin: 0 auto;">
+                    <svg width="${chartWidth}" height="${chartHeight + 40}" style="overflow: visible;">
+                        <defs>
+                            <pattern id="grid" width="20" height="15" patternUnits="userSpaceOnUse">
+                                <path d="M 20 0 L 0 0 0 15" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                            </pattern>
+                        </defs>
+                        <rect width="${chartWidth}" height="${chartHeight}" fill="url(#grid)" />
+                        
+                        <text x="-5" y="15" text-anchor="end" font-size="10" fill="#666">100%</text>
+                        <text x="-5" y="${chartHeight/2 + 15}" text-anchor="end" font-size="10" fill="#666">50%</text>
+                        <text x="-5" y="${chartHeight + 15}" text-anchor="end" font-size="10" fill="#666">0%</text>
+                        
+                        <polyline
+                            fill="none"
+                            stroke="#2E8B57"
+                            stroke-width="3"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            points="${chartData.map((point, index) => {
+                                const x = (index / (chartData.length - 1)) * (chartWidth - 20) + 10;
+                                const y = chartHeight - (parseFloat(point.percentage) / 100) * chartHeight;
+                                return `${x},${y}`;
+                            }).join(' ')}"
+                        />
+                        
+                        ${chartData.map((point, index) => {
+                            const x = (index / (chartData.length - 1)) * (chartWidth - 20) + 10;
+                            const y = chartHeight - (parseFloat(point.percentage) / 100) * chartHeight;
+                            return `
+                                <circle cx="${x}" cy="${y}" r="4" fill="#2E8B57" stroke="white" stroke-width="2"/>
+                                <text x="${x}" y="${chartHeight + 25}" text-anchor="middle" font-size="9" fill="#666">${point.date.split(',')[0].split('/')[0]}/${point.date.split(',')[0].split('/')[1]}</text>
+                                <text x="${x}" y="${y - 10}" text-anchor="middle" font-size="10" font-weight="bold" fill="#2E8B57">${point.percentage}%</text>
+                            `;
+                        }).join('')}
+                    </svg>
+                </div>
+            `;
+
+            document.getElementById('chartContent').innerHTML = chartHTML;
+        }
+
+        // Update session summary
+        function updateSessions() {
+            const recentSessions = {};
+            
+            dashboardData.forEach(record => {
+                if (!recentSessions[record.sessionId]) {
+                    recentSessions[record.sessionId] = {
+                        date: record.date,
+                        sessionId: record.sessionId,
+                        distances: {}
+                    };
+                }
+                
+                if (!recentSessions[record.sessionId].distances[record.distance]) {
+                    recentSessions[record.sessionId].distances[record.distance] = {
+                        makes: 0,
+                        attempts: 0
+                    };
+                }
+                
+                recentSessions[record.sessionId].distances[record.distance].makes += record.makes;
+                recentSessions[record.sessionId].distances[record.distance].attempts += record.puttsPerSet;
+            });
+
+            const sessions = Object.values(recentSessions).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            let sessionHTML = '';
+            sessions.slice(0, 10).forEach(session => {
+                const distances = Object.keys(session.distances).map(dist => {
+                    const data = session.distances[dist];
+                    const percentage = (data.makes / data.attempts * 100).toFixed(0);
+                    return `${dist}ft: ${percentage}%`;
+                }).join(', ');
+
+                sessionHTML += `
+                    <div class="session-item">
+                        <div class="session-info-dash">
+                            <div class="session-date">${session.date}</div>
+                            <div class="session-details">${distances}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('sessionSummary').innerHTML = sessionHTML || '<div class="no-data">No sessions yet</div>';
+        }
+
+        function startSession() {
+            const distance = document.getElementById('distance').value;
+            const puttsPerSet = document.getElementById('puttsPerSet').value;
+            const sessionId = document.getElementById('sessionId').value || `Session_${Date.now()}`;
+
+            if (!distance || !puttsPerSet) {
+                showMessage('Please enter distance and putts per set', 'error');
+                return;
+            }
+
+            currentSessionData = {
+                distance: parseInt(distance),
+                puttsPerSet: parseInt(puttsPerSet),
+                sessionId: sessionId,
+                sets: [],
+                isActive: true
+            };
+
+            document.getElementById('currentDistance').textContent = distance;
+            document.getElementById('currentPutts').textContent = puttsPerSet;
+            document.getElementById('currentSessionId').textContent = sessionId;
+
+            document.getElementById('currentSession').classList.remove('hidden');
+            document.getElementById('quickLogSection').classList.remove('hidden');
+            document.getElementById('sessionStats').classList.remove('hidden');
+
+            updatePresetButtons(parseInt(puttsPerSet));
+
+            showMessage(`Session started! ${distance}ft, ${puttsPerSet} putts per set`, 'success');
+        }
+
+        function updatePresetButtons(maxPutts) {
+            const container = document.querySelector('.preset-buttons');
+            container.innerHTML = '';
+            
+            for (let i = 0; i <= Math.min(maxPutts, 10); i++) {
+                const btn = document.createElement('button');
+                btn.className = 'preset-btn';
+                btn.textContent = i;
+                btn.onclick = () => setMakes(i);
+                container.appendChild(btn);
+            }
+        }
+
+        function setMakes(makes) {
+            document.getElementById('makes').value = makes;
+        }
+
+        function logSet() {
+            if (!currentSessionData.isActive) {
+                showMessage('Please start a session first', 'error');
+                return;
+            }
+
+            const makes = parseInt(document.getElementById('makes').value);
+            
+            if (isNaN(makes) || makes < 0 || makes > currentSessionData.puttsPerSet) {
+                showMessage(`Makes must be between 0 and ${currentSessionData.puttsPerSet}`, 'error');
+                return;
+            }
+
+            const setData = {
+                makes: makes,
+                attempts: currentSessionData.puttsPerSet,
+                percentage: (makes / currentSessionData.puttsPerSet * 100).toFixed(1),
+                timestamp: new Date().toISOString()
+            };
+
+            currentSessionData.sets.push(setData);
+            saveToLocalData(setData);
+            updateSessionStats();
+            document.getElementById('makes').value = '';
+        }
+
+        async function saveToLocalData(setData) {
+            const record = {
+                "Session ID": currentSessionData.sessionId,
+                "Distance": currentSessionData.distance,
+                "Putts Per Set": currentSessionData.puttsPerSet,
+                "Makes": setData.makes,
+                "Date": new Date().toLocaleString('en-US'),
+                "Status": "Completed"
+            };
+
+            if (isOnline) {
+                try {
+                    await saveToAirtable(record);
+                    showMessage(`Set saved! ${setData.makes}/${currentSessionData.puttsPerSet} (${setData.percentage}%)`, 'success');
+                } catch (error) {
+                    console.error('Error saving to Airtable:', error);
+                    saveOfflineData(record);
+                    showMessage(`Saved offline! ${setData.makes}/${currentSessionData.puttsPerSet} (${setData.percentage}%)`, 'success');
+                }
+            } else {
+                saveOfflineData(record);
+                showMessage(`Saved offline! ${setData.makes}/${currentSessionData.puttsPerSet} (${setData.percentage}%)`, 'success');
+            }
+        }
+
+        async function saveToAirtable(record) {
+            const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${AIRTABLE_CONFIG.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    records: [{
+                        fields: record
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Airtable API error: ${JSON.stringify(errorData)}`);
+            }
+
+            return await response.json();
+        }
+
+        function updateSessionStats() {
+            const totalSets = currentSessionData.sets.length;
+            const totalAttempts = totalSets * currentSessionData.puttsPerSet;
+            const totalMakes = currentSessionData.sets.reduce((sum, set) => sum + set.makes, 0);
+            const sessionAverage = totalAttempts > 0 ? (totalMakes / totalAttempts * 100).toFixed(1) : 0;
+
+            document.getElementById('setsCount').textContent = totalSets;
+            document.getElementById('totalAttempts').textContent = totalAttempts;
+            document.getElementById('totalMakes').textContent = totalMakes;
+            document.getElementById('sessionAverage').textContent = sessionAverage + '%';
+        }
+
+        function endSession() {
+            currentSessionData.isActive = false;
+            
+            document.getElementById('currentSession').classList.add('hidden');
+            document.getElementById('quickLogSection').classList.add('hidden');
+            document.getElementById('sessionStats').classList.add('hidden');
+
+            showMessage('Session ended. Set up a new session above.', 'success');
+        }
+
+        function showMessage(message, type) {
+            const messageArea = document.getElementById('messageArea');
+            const messageClass = type === 'error' ? 'error-message' : 'success-message';
+            
+            messageArea.innerHTML = `<div class="${messageClass}">${message}</div>`;
+            
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('distance').value = '15';
+            document.getElementById('puttsPerSet').value = '5';
+            updateOnlineStatus();
+            
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !currentSessionData.isActive) {
+                    startSession();
+                } else if (e.key === 'Enter' && currentSessionData.isActive) {
+                    logSet();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
