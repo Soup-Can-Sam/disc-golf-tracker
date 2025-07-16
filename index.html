@@ -81,6 +81,80 @@
             display: none;
         }
 
+        .setup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .setup-modal {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .setup-modal h2 {
+            color: #2E8B57;
+            margin-bottom: 20px;
+        }
+
+        .setup-modal input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .setup-modal button {
+            width: 100%;
+            padding: 12px;
+            background: #2E8B57;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .user-selector {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-selector select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .add-user-btn {
+            padding: 8px 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
         /* Tab Navigation */
         .tab-container {
             display: flex;
@@ -396,12 +470,6 @@
             color: #333;
         }
 
-        .session-percentage {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2E8B57;
-        }
-
         .loading {
             text-align: center;
             padding: 20px;
@@ -421,15 +489,36 @@
     </style>
 </head>
 <body>
+    <!-- Setup Overlay -->
+    <div id="setupOverlay" class="setup-overlay">
+        <div class="setup-modal">
+            <h2>🥏 Setup Your Tracker</h2>
+            <p style="margin-bottom: 20px; color: #666;">Enter your Airtable credentials to get started:</p>
+            <input type="text" id="setupToken" placeholder="Personal Access Token" />
+            <input type="text" id="setupBaseId" placeholder="Base ID (app...)" />
+            <input type="text" id="setupTableName" placeholder="Table Name" />
+            <button onclick="saveSetup()">Save & Continue</button>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <h1>🥏 Putting Tracker</h1>
-            <p>Rapid-fire disc golf putting logger</p>
+            <p>It's not the putter, it's the putter</p>
             <div id="syncStatus" class="sync-status online">●</div>
         </div>
         
         <div id="installPrompt" class="install-prompt">
             📱 Install this app for better experience! Tap here.
+        </div>
+        
+        <!-- User Selector -->
+        <div class="user-selector">
+            <label style="font-weight: 600; color: #333;">User:</label>
+            <select id="userSelect" onchange="switchUser()">
+                <option value="">Select User</option>
+            </select>
+            <button class="add-user-btn" onclick="addNewUser()">+ Add User</button>
         </div>
         
         <!-- Tab Navigation -->
@@ -456,10 +545,6 @@
                         <label for="puttsPerSet">Putts per Set</label>
                         <input type="number" id="puttsPerSet" placeholder="5" min="1" max="20">
                     </div>
-                    <div class="input-group">
-                        <label for="sessionId">Session ID (optional)</label>
-                        <input type="text" id="sessionId" placeholder="Practice 1">
-                    </div>
                     <button class="set-button" onclick="startSession()">Start Session</button>
                 </div>
 
@@ -470,8 +555,8 @@
                         <span>Per Set: <span id="currentPutts"></span> putts</span>
                     </div>
                     <div class="session-info">
-                        <span>Session: <span id="currentSessionId"></span></span>
-                        <button onclick="endSession()" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">Change Setup</button>
+                        <span>User: <span id="currentUser"></span></span>
+                        <button onclick="endSession()" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">End Session</button>
                     </div>
                 </div>
 
@@ -530,8 +615,8 @@
                 <div class="distance-selector">
                     <h4>Select Distance:</h4>
                     <div class="distance-buttons">
-                        <button class="distance-btn active" onclick="selectDistance(10)">10ft</button>
-                        <button class="distance-btn" onclick="selectDistance(15)">15ft</button>
+                        <button class="distance-btn active" onclick="selectDistance(15)">15ft</button>
+                        <button class="distance-btn" onclick="selectDistance(20)">20ft</button>
                         <button class="distance-btn" onclick="selectDistance(25)">25ft</button>
                         <button class="distance-btn" onclick="selectDistance(30)">30ft</button>
                     </div>
@@ -539,7 +624,7 @@
 
                 <!-- Chart Container -->
                 <div class="chart-container">
-                    <div class="chart-title" id="chartTitle">10ft Putting Progress</div>
+                    <div class="chart-title" id="chartTitle">15ft Putting Progress</div>
                     <div id="chartContent">
                         <div class="loading">Loading data...</div>
                     </div>
@@ -557,17 +642,18 @@
     </div>
 
     <script>
-        // AIRTABLE CONFIGURATION - ADD YOUR DETAILS HERE
-        const AIRTABLE_CONFIG = {
-            token: 'patxAPVJwZGU2MzBp.48d1cad399a2d2828c580359041b696941140740f3e7bcf40f7215fba4ae7045',
-            baseId: 'appeDfMb9yDopLacN',
-            tableName: 'Table 1'
+        let AIRTABLE_CONFIG = {
+            token: '',
+            baseId: '',
+            tableName: ''
         };
 
-        let selectedDistance = 10;
+        let selectedDistance = 15;
         let dashboardData = [];
         let isOnline = navigator.onLine;
         let deferredPrompt;
+        let currentUser = '';
+        let users = JSON.parse(localStorage.getItem('users') || '[]');
 
         let currentSessionData = {
             distance: 0,
@@ -576,6 +662,108 @@
             sets: [],
             isActive: false
         };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSetup();
+            loadUsers();
+            updateOnlineStatus();
+            
+            document.getElementById('distance').value = '15';
+            document.getElementById('puttsPerSet').value = '5';
+            
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !currentSessionData.isActive) {
+                    startSession();
+                } else if (e.key === 'Enter' && currentSessionData.isActive) {
+                    logSet();
+                }
+            });
+        });
+
+        // Setup and Configuration
+        function checkSetup() {
+            const savedConfig = localStorage.getItem('airtableConfig');
+            if (savedConfig) {
+                AIRTABLE_CONFIG = JSON.parse(savedConfig);
+                document.getElementById('setupOverlay').style.display = 'none';
+            }
+        }
+
+        function saveSetup() {
+            const token = document.getElementById('setupToken').value.trim();
+            const baseId = document.getElementById('setupBaseId').value.trim();
+            const tableName = document.getElementById('setupTableName').value.trim();
+
+            if (!token || !baseId || !tableName) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            AIRTABLE_CONFIG = { token, baseId, tableName };
+            localStorage.setItem('airtableConfig', JSON.stringify(AIRTABLE_CONFIG));
+            document.getElementById('setupOverlay').style.display = 'none';
+            showMessage('Configuration saved successfully!', 'success');
+        }
+
+        // User Management
+        function loadUsers() {
+            const userSelect = document.getElementById('userSelect');
+            userSelect.innerHTML = '<option value="">Select User</option>';
+            
+            users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user;
+                option.textContent = user;
+                userSelect.appendChild(option);
+            });
+
+            // Load saved user
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser && users.includes(savedUser)) {
+                userSelect.value = savedUser;
+                currentUser = savedUser;
+            }
+        }
+
+        function switchUser() {
+            const selectedUser = document.getElementById('userSelect').value;
+            if (selectedUser) {
+                currentUser = selectedUser;
+                localStorage.setItem('currentUser', selectedUser);
+                showMessage(`Switched to user: ${selectedUser}`, 'success');
+                
+                // Refresh dashboard if it's active
+                if (document.getElementById('dashboard').classList.contains('active')) {
+                    loadDashboardData();
+                }
+            }
+        }
+
+        function addNewUser() {
+            const userName = prompt('Enter new user name:');
+            if (userName && userName.trim()) {
+                const trimmedName = userName.trim();
+                if (!users.includes(trimmedName)) {
+                    users.push(trimmedName);
+                    localStorage.setItem('users', JSON.stringify(users));
+                    loadUsers();
+                    document.getElementById('userSelect').value = trimmedName;
+                    switchUser();
+                    showMessage(`Added new user: ${trimmedName}`, 'success');
+                } else {
+                    showMessage('User already exists', 'error');
+                }
+            }
+        }
+
+        // Generate auto Session ID
+        function generateSessionId() {
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '');
+            return `${currentUser}_${dateStr}_${timeStr}`;
+        }
 
         // PWA Install functionality
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -597,7 +785,7 @@
 
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('data:application/javascript;base64,Y29uc3QgQ0FDSEVfTkFNRSA9ICdkaXNjLWdvbGYtcHV0dGluZy12MSc7DQpjb25zdCB1cmxzVG9DYWNoZSA9IFsNCiAgJy4vJywNCiAgJy4vaW5kZXguaHRtbCcNCl07DQoNCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignaW5zdGFsbCcsIGV2ZW50ID0+IHsNCiAgZXZlbnQud2FpdFVudGlsKA0KICAgIGNhY2hlcy5vcGVuKENBQ0hFX05BTUUpDQogICAgICAudGhlbihjYWNoZSA9PiBjYWNoZS5hZGRBbGwodXJsc1RvQ2FjaGUpKQ0KICApOw0KfSk7DQoNCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignZmV0Y2gnLCBldmVudCA9PiB7DQogIGV2ZW50LnJlc3BvbmRXaXRoKA0KICAgIGNhY2hlcy5tYXRjaChldmVudC5yZXF1ZXN0KQ0KICAgICAgLnRoZW4ocmVzcG9uc2UgPT4gew0KICAgICAgICBpZiAocmVzcG9uc2UpIHsNCiAgICAgICAgICByZXR1cm4gcmVzcG9uc2U7DQogICAgICAgIH0NCiAgICAgICAgcmV0dXJuIGZldGNoKGV2ZW50LnJlcXVlc3QpOw0KICAgICAgfSkNCiAgKTsNCn0pOw==')
+            navigator.serviceWorker.register('data:application/javascript;base64,Y29uc3QgQ0FDSEVfTkFNRSA9ICdkaXNjLWdvbGYtcHV0dGluZy12Mic7DQpjb25zdCB1cmxzVG9DYWNoZSA9IFsNCiAgJy4vJywNCiAgJy4vaW5kZXguaHRtbCcNCl07DQoNCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignaW5zdGFsbCcsIGV2ZW50ID0+IHsNCiAgZXZlbnQud2FpdFVudGlsKA0KICAgIGNhY2hlcy5vcGVuKENBQ0hFX05BTUUpDQogICAgICAudGhlbihjYWNoZSA9PiBjYWNoZS5hZGRBbGwodXJsc1RvQ2FjaGUpKQ0KICApOw0KfSk7DQoNCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignZmV0Y2gnLCBldmVudCA9PiB7DQogIGV2ZW50LnJlc3BvbmRXaXRoKA0KICAgIGNhY2hlcy5tYXRjaChldmVudC5yZXF1ZXN0KQ0KICAgICAgLnRoZW4ocmVzcG9uc2UgPT4gew0KICAgICAgICBpZiAocmVzcG9uc2UpIHsNCiAgICAgICAgICByZXR1cm4gcmVzcG9uc2U7DQogICAgICAgIH0NCiAgICAgICAgcmV0dXJuIGZldGNoKGV2ZW50LnJlcXVlc3QpOw0KICAgICAgfSkNCiAgKTsNCn0pOw==')
               .then(() => console.log('Service Worker registered'))
               .catch(err => console.log('Service Worker registration failed'));
         }
@@ -702,10 +890,16 @@
             updateSessions();
         }
 
-        // Load data from Airtable for dashboard
+        // Load data from Airtable for dashboard (filtered by current user)
         async function loadDashboardData() {
+            if (!currentUser) {
+                document.getElementById('chartContent').innerHTML = '<div class="no-data">Please select a user first</div>';
+                document.getElementById('sessionSummary').innerHTML = '<div class="no-data">Please select a user first</div>';
+                return;
+            }
+
             try {
-                const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
+                const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}?filterByFormula={User}="${currentUser}"`;
                 const response = await fetch(url, {
                     headers: {
                         'Authorization': `Bearer ${AIRTABLE_CONFIG.token}`
@@ -723,7 +917,8 @@
                     puttsPerSet: record.fields['Putts Per Set'],
                     makes: record.fields.Makes,
                     percentage: record.fields['Make Percentage'] || (record.fields.Makes / record.fields['Putts Per Set'] * 100),
-                    sessionId: record.fields['Session ID']
+                    sessionId: record.fields['Session ID'],
+                    user: record.fields.User
                 }));
 
                 updateChart();
@@ -766,7 +961,6 @@
                 sessionId: session.sessionId
             })).sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            const maxPercentage = Math.max(...chartData.map(d => parseFloat(d.percentage)), 100);
             const chartHeight = 150;
             const chartWidth = 300;
             
@@ -791,19 +985,18 @@
                             stroke-linecap="round"
                             stroke-linejoin="round"
                             points="${chartData.map((point, index) => {
-                                const x = (index / (chartData.length - 1)) * (chartWidth - 20) + 10;
+                                const x = (index / Math.max(chartData.length - 1, 1)) * (chartWidth - 20) + 10;
                                 const y = chartHeight - (parseFloat(point.percentage) / 100) * chartHeight;
                                 return `${x},${y}`;
                             }).join(' ')}"
                         />
                         
                         ${chartData.map((point, index) => {
-                            const x = (index / (chartData.length - 1)) * (chartWidth - 20) + 10;
+                            const x = (index / Math.max(chartData.length - 1, 1)) * (chartWidth - 20) + 10;
                             const y = chartHeight - (parseFloat(point.percentage) / 100) * chartHeight;
                             return `
                                 <circle cx="${x}" cy="${y}" r="4" fill="#2E8B57" stroke="white" stroke-width="2"/>
                                 <text x="${x}" y="${chartHeight + 25}" text-anchor="middle" font-size="9" fill="#666">${point.date.split(',')[0].split('/')[0]}/${point.date.split(',')[0].split('/')[1]}</text>
-                                <text x="${x}" y="${y - 10}" text-anchor="middle" font-size="10" font-weight="bold" fill="#2E8B57">${point.percentage}%</text>
                             `;
                         }).join('')}
                     </svg>
@@ -861,9 +1054,13 @@
         }
 
         function startSession() {
+            if (!currentUser) {
+                showMessage('Please select a user first', 'error');
+                return;
+            }
+
             const distance = document.getElementById('distance').value;
             const puttsPerSet = document.getElementById('puttsPerSet').value;
-            const sessionId = document.getElementById('sessionId').value || `Session_${Date.now()}`;
 
             if (!distance || !puttsPerSet) {
                 showMessage('Please enter distance and putts per set', 'error');
@@ -873,14 +1070,14 @@
             currentSessionData = {
                 distance: parseInt(distance),
                 puttsPerSet: parseInt(puttsPerSet),
-                sessionId: sessionId,
+                sessionId: generateSessionId(),
                 sets: [],
                 isActive: true
             };
 
             document.getElementById('currentDistance').textContent = distance;
             document.getElementById('currentPutts').textContent = puttsPerSet;
-            document.getElementById('currentSessionId').textContent = sessionId;
+            document.getElementById('currentUser').textContent = currentUser;
 
             document.getElementById('currentSession').classList.remove('hidden');
             document.getElementById('quickLogSection').classList.remove('hidden');
@@ -937,6 +1134,7 @@
         async function saveToLocalData(setData) {
             const record = {
                 "Session ID": currentSessionData.sessionId,
+                "User": currentUser,
                 "Distance": currentSessionData.distance,
                 "Putts Per Set": currentSessionData.puttsPerSet,
                 "Makes": setData.makes,
@@ -1015,21 +1213,6 @@
                 messageArea.innerHTML = '';
             }, 3000);
         }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('distance').value = '15';
-            document.getElementById('puttsPerSet').value = '5';
-            updateOnlineStatus();
-            
-            document.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !currentSessionData.isActive) {
-                    startSession();
-                } else if (e.key === 'Enter' && currentSessionData.isActive) {
-                    logSet();
-                }
-            });
-        });
     </script>
 </body>
 </html>
