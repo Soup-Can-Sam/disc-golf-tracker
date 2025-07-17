@@ -72,6 +72,27 @@
             background: rgba(33, 150, 243, 0.8);
         }
 
+        .refresh-btn {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .refresh-btn:hover {
+            transform: rotate(180deg);
+        }
+
         .install-prompt {
             background: #2196F3;
             color: white;
@@ -234,6 +255,34 @@
             border-color: #2E8B57;
         }
 
+        .distance-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .distance-select-btn {
+            padding: 15px;
+            background: #e9ecef;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .distance-select-btn.selected {
+            background: #2E8B57;
+            color: white;
+            border-color: #2E8B57;
+        }
+
+        .distance-select-btn:hover {
+            border-color: #2E8B57;
+        }
+
         .set-button {
             width: 100%;
             padding: 12px;
@@ -249,6 +298,11 @@
 
         .set-button:hover {
             background: #236B47;
+        }
+
+        .set-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
         .current-session {
@@ -404,13 +458,9 @@
             padding: 20px;
         }
 
-        .distance-selector {
-            margin-bottom: 20px;
-        }
-
         .distance-buttons {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 10px;
             margin-bottom: 20px;
         }
@@ -459,19 +509,28 @@
             background: #f8f9fa;
             border-radius: 12px;
             padding: 20px;
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
         }
 
         .session-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
             background: white;
             border-radius: 8px;
             margin-bottom: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .session-header {
+            padding: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .session-header:hover {
+            background: #f8f9fa;
         }
 
         .session-info-dash {
@@ -485,6 +544,45 @@
 
         .session-details {
             font-weight: 600;
+            color: #333;
+            margin-top: 4px;
+        }
+
+        .expand-icon {
+            font-size: 12px;
+            color: #6c757d;
+            transition: transform 0.3s;
+        }
+
+        .session-item.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .session-sets {
+            padding: 0 12px 12px 12px;
+            display: none;
+        }
+
+        .session-item.expanded .session-sets {
+            display: block;
+        }
+
+        .set-item {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-top: 6px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .set-number {
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .set-result {
             color: #333;
         }
 
@@ -551,9 +649,49 @@
             background: #6c757d;
             color: white;
         }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #2E8B57;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Checking for updates...</p>
+        </div>
+    </div>
+
     <!-- Setup Overlay -->
     <div id="setupOverlay" class="setup-overlay">
         <div class="setup-modal">
@@ -580,6 +718,7 @@
 
     <div class="container">
         <div class="header">
+            <button class="refresh-btn" id="refreshBtn" title="Refresh App">↻</button>
             <h1>🥏 Putting Tracker</h1>
             <p>It's not the putter, it's the putter</p>
             <div id="syncStatus" class="sync-status online">●</div>
@@ -615,14 +754,20 @@
                 <div id="setupSection" class="setup-section">
                     <h3>Session Setup</h3>
                     <div class="input-group">
-                        <label for="distance">Distance (feet)</label>
-                        <input type="number" id="distance" placeholder="15" min="1" max="100">
+                        <label>Distance (feet)</label>
+                        <div class="distance-selector">
+                            <button class="distance-select-btn" data-distance="10">10 ft</button>
+                            <button class="distance-select-btn" data-distance="15">15 ft</button>
+                            <button class="distance-select-btn" data-distance="20">20 ft</button>
+                            <button class="distance-select-btn" data-distance="25">25 ft</button>
+                            <button class="distance-select-btn" data-distance="30">30 ft</button>
+                        </div>
                     </div>
                     <div class="input-group">
                         <label for="puttsPerSet">Putts per Set</label>
                         <input type="number" id="puttsPerSet" placeholder="5" min="1" max="20">
                     </div>
-                    <button class="set-button" id="startSessionBtn">Start Session</button>
+                    <button class="set-button" id="startSessionBtn" disabled>Start Session</button>
                 </div>
 
                 <!-- Active Session Content - Only visible during active session -->
@@ -692,6 +837,7 @@
                 <div class="distance-selector">
                     <h4>Select Distance:</h4>
                     <div class="distance-buttons" id="distanceButtons">
+                        <button class="distance-btn" data-distance="10">10ft</button>
                         <button class="distance-btn active" data-distance="15">15ft</button>
                         <button class="distance-btn" data-distance="20">20ft</button>
                         <button class="distance-btn" data-distance="25">25ft</button>
@@ -727,11 +873,13 @@
         };
 
         let selectedDistance = 15;
+        let selectedSetupDistance = null;
         let dashboardData = [];
         let isOnline = navigator.onLine;
         let deferredPrompt;
         let currentUser = '';
         let users = JSON.parse(localStorage.getItem('users') || '[]');
+        let expandedSessions = new Set();
 
         let currentSessionData = {
             distance: 0,
@@ -743,17 +891,46 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            checkSetup();
-            loadUsers();
-            updateOnlineStatus();
-            setupEventListeners();
+            // Auto-refresh on launch
+            forceRefresh();
             
-            document.getElementById('distance').value = '15';
-            document.getElementById('puttsPerSet').value = '5';
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                checkSetup();
+                loadUsers();
+                updateOnlineStatus();
+                setupEventListeners();
+                
+                document.getElementById('puttsPerSet').value = '5';
+            }, 1500); // Small delay for refresh
         });
+
+        // Force refresh function
+        function forceRefresh() {
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => {
+                        caches.delete(name);
+                    });
+                });
+            }
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    registrations.forEach(registration => {
+                        registration.unregister();
+                    });
+                });
+            }
+        }
 
         // Setup all event listeners
         function setupEventListeners() {
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                location.reload(true);
+            });
+            
             // Setup button
             document.getElementById('saveSetupBtn').addEventListener('click', saveSetup);
             
@@ -768,6 +945,13 @@
                 });
             });
             
+            // Distance selection for setup
+            document.querySelectorAll('.distance-select-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selectSetupDistance(parseInt(this.dataset.distance));
+                });
+            });
+            
             // Session management
             document.getElementById('startSessionBtn').addEventListener('click', startSession);
             document.getElementById('logSetBtn').addEventListener('click', logSet);
@@ -777,7 +961,7 @@
             document.getElementById('confirmEndBtn').addEventListener('click', confirmEndSession);
             document.getElementById('cancelEndBtn').addEventListener('click', cancelEndSession);
             
-            // Distance buttons
+            // Dashboard distance buttons
             document.querySelectorAll('.distance-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     selectDistance(parseInt(this.dataset.distance));
@@ -873,6 +1057,35 @@
                 }
             }
         }
+
+        // Distance selection for setup
+        function selectSetupDistance(distance) {
+            selectedSetupDistance = distance;
+            
+            document.querySelectorAll('.distance-select-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                if (parseInt(btn.dataset.distance) === distance) {
+                    btn.classList.add('selected');
+                }
+            });
+            
+            // Enable start button if distance is selected
+            checkStartButtonState();
+        }
+
+        function checkStartButtonState() {
+            const startBtn = document.getElementById('startSessionBtn');
+            const puttsPerSet = document.getElementById('puttsPerSet').value;
+            
+            if (selectedSetupDistance && puttsPerSet && currentUser) {
+                startBtn.disabled = false;
+            } else {
+                startBtn.disabled = true;
+            }
+        }
+
+        // Add event listener for putts per set input
+        document.getElementById('puttsPerSet')?.addEventListener('input', checkStartButtonState);
 
         // Generate auto Session ID
         function generateSessionId() {
@@ -1127,45 +1340,70 @@
             document.getElementById('chartContent').innerHTML = chartHTML;
         }
 
-        // Update session summary
+        // Update session summary with accordion functionality
         function updateSessions() {
-            const recentSessions = {};
+            const sessionData = {};
             
+            // Group data by session
             dashboardData.forEach(record => {
-                if (!recentSessions[record.sessionId]) {
-                    recentSessions[record.sessionId] = {
+                if (!sessionData[record.sessionId]) {
+                    sessionData[record.sessionId] = {
                         date: record.date,
                         sessionId: record.sessionId,
-                        distances: {}
+                        distances: {},
+                        sets: []
                     };
                 }
                 
-                if (!recentSessions[record.sessionId].distances[record.distance]) {
-                    recentSessions[record.sessionId].distances[record.distance] = {
+                if (!sessionData[record.sessionId].distances[record.distance]) {
+                    sessionData[record.sessionId].distances[record.distance] = {
                         makes: 0,
-                        attempts: 0
+                        attempts: 0,
+                        sets: 0
                     };
                 }
                 
-                recentSessions[record.sessionId].distances[record.distance].makes += record.makes;
-                recentSessions[record.sessionId].distances[record.distance].attempts += record.puttsPerSet;
+                sessionData[record.sessionId].distances[record.distance].makes += record.makes;
+                sessionData[record.sessionId].distances[record.distance].attempts += record.puttsPerSet;
+                sessionData[record.sessionId].distances[record.distance].sets += 1;
+                
+                // Add individual set data
+                sessionData[record.sessionId].sets.push({
+                    distance: record.distance,
+                    makes: record.makes,
+                    attempts: record.puttsPerSet,
+                    percentage: record.percentage
+                });
             });
 
-            const sessions = Object.values(recentSessions).sort((a, b) => new Date(b.date) - new Date(a.date));
+            const sessions = Object.values(sessionData).sort((a, b) => new Date(b.date) - new Date(a.date));
 
             let sessionHTML = '';
             sessions.slice(0, 10).forEach(session => {
-                const distances = Object.keys(session.distances).map(dist => {
-                    const data = session.distances[dist];
+                const isExpanded = expandedSessions.has(session.sessionId);
+                
+                // Calculate summary for each distance
+                const distanceSummary = Object.entries(session.distances).map(([dist, data]) => {
                     const percentage = (data.makes / data.attempts * 100).toFixed(0);
-                    return `${dist}ft: ${percentage}%`;
-                }).join(', ');
+                    return `${dist}ft: ${percentage}% | ${data.sets} sets | ${data.attempts} putts`;
+                }).join(' | ');
 
                 sessionHTML += `
-                    <div class="session-item">
-                        <div class="session-info-dash">
-                            <div class="session-date">${session.date}</div>
-                            <div class="session-details">${distances}</div>
+                    <div class="session-item ${isExpanded ? 'expanded' : ''}" data-session-id="${session.sessionId}">
+                        <div class="session-header" onclick="toggleSession('${session.sessionId}')">
+                            <div class="session-info-dash">
+                                <div class="session-date">${session.date}</div>
+                                <div class="session-details">${distanceSummary}</div>
+                            </div>
+                            <span class="expand-icon">▼</span>
+                        </div>
+                        <div class="session-sets">
+                            ${session.sets.map((set, index) => `
+                                <div class="set-item">
+                                    <span class="set-number">Set ${index + 1} (${set.distance}ft):</span>
+                                    <span class="set-result">${set.makes}/${set.attempts} (${set.percentage}%)</span>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                 `;
@@ -1174,29 +1412,43 @@
             document.getElementById('sessionSummary').innerHTML = sessionHTML || '<div class="no-data">No sessions yet</div>';
         }
 
+        // Toggle session expansion
+        function toggleSession(sessionId) {
+            if (expandedSessions.has(sessionId)) {
+                expandedSessions.delete(sessionId);
+            } else {
+                expandedSessions.add(sessionId);
+            }
+            updateSessions();
+        }
+
         function startSession() {
             if (!currentUser) {
                 showMessage('Please select a user first', 'error');
                 return;
             }
 
-            const distance = document.getElementById('distance').value;
+            if (!selectedSetupDistance) {
+                showMessage('Please select a distance', 'error');
+                return;
+            }
+
             const puttsPerSet = document.getElementById('puttsPerSet').value;
 
-            if (!distance || !puttsPerSet) {
-                showMessage('Please enter distance and putts per set', 'error');
+            if (!puttsPerSet) {
+                showMessage('Please enter putts per set', 'error');
                 return;
             }
 
             currentSessionData = {
-                distance: parseInt(distance),
+                distance: selectedSetupDistance,
                 puttsPerSet: parseInt(puttsPerSet),
                 sessionId: generateSessionId(),
                 sets: [],
                 isActive: true
             };
 
-            document.getElementById('currentDistance').textContent = distance;
+            document.getElementById('currentDistance').textContent = selectedSetupDistance;
             document.getElementById('currentPutts').textContent = puttsPerSet;
             document.getElementById('currentUser').textContent = currentUser;
 
@@ -1206,7 +1458,7 @@
 
             updatePresetButtons(parseInt(puttsPerSet));
 
-            showMessage(`Session started! ${distance}ft, ${puttsPerSet} putts per set`, 'success');
+            showMessage(`Session started! ${selectedSetupDistance}ft, ${puttsPerSet} putts per set`, 'success');
         }
 
         function updatePresetButtons(maxPutts) {
@@ -1260,7 +1512,8 @@
                 "Putts Per Set": currentSessionData.puttsPerSet,
                 "Makes": setData.makes,
                 "Date": new Date().toLocaleString('en-US'),
-                "Status": "Completed"
+                "Status": "Completed",
+                "Make Percentage": parseFloat(setData.percentage)
             };
 
             if (isOnline) {
@@ -1324,11 +1577,18 @@
 
         function confirmEndSession() {
             currentSessionData.isActive = false;
+            selectedSetupDistance = null;
+            
+            // Reset distance selection buttons
+            document.querySelectorAll('.distance-select-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
             
             // Show setup section and hide active session content
             document.getElementById('setupSection').classList.remove('hidden');
             document.getElementById('activeSessionContent').classList.add('hidden');
             document.getElementById('confirmModal').style.display = 'none';
+            document.getElementById('startSessionBtn').disabled = true;
 
             showMessage('Session ended. Set up a new session above.', 'success');
         }
