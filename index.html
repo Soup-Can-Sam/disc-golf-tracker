@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disc Golf Putting Tracker</title>
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRGlzYyBHb2xmIFB1dHRpbmcgVHJhY2tlciIsInNob3J0X25hbWUiOiJQdXR0aW5nIFRyYWNrZXIiLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiM2NjdlZWEiLCJ0aGVtZV9jb2xvciI6IiMyRThCNTciLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCMmFXVjNRbTk0UFNJd0lEQWdOVEV5SURVeE1pSWdlRzFzYm5NOUltaDBkSEE2THk5M2QzY3Vkek11YjNKbkx6SXdNREF2YzNabklpQkdkbTlqYTJOdmJHOXlQU0k5SWo0OGNtVmpkQ0JtYVd4c1BTSWpOelZrWW1FbklpQjNhV1IwYUQwaU5URXlJaUJvWldsbmFIUTlJalV4TWlJdlBqeDBaWGgwSUdacGJHdzlJaU5tWm1ZaUlIZ3BRak0xSXlSemNHRnVJSGc5SWpFME1pSWdlVDBpTXprd0lpSWdabTl1ZEMxemFYcGxQU0kwTUNJK1BIUjBjWEJoYmtSeVAxeDRNa005SWtacGNtVk1hV3hsVDFKa1pYSXFQand2ZEhkNGRHRnVQand2ZEhSNGRHRnVQand2ZEhSNGRHRnVQand2YzNabkBgIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRGlzYyBHb2xmIFB1dHRpbmcgVHJhY2tlciIsInNob3J0X25hbWUiOiJQdXR0aW5nIFRyYWNrZXIiLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiM2NjdlZWEiLCJ0aGVtZV9jb2xvciI6IiMyRThCNTciLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCMmFXVjNRbTk0UFNJd0lEQWdOVEV5SURVeE1pSWdlRzFzYm5NOUltaDBkSEE2THk5M2QzY3Vkek11YjNKbkx6SXdNREF2YzNabklpQkdkbTlqYTJOdmJHOXlQU0k5SWo0OGNtVmpkQ0JtYVd4c1BTSWpOelZrWW1FbElpQjNhV1IwYUQwaU5URXlJaUJvWldsbmFIUTlJalV4TWlJdlBqeDBaWGgwSUdacGJHdzlJaU5tWm1ZaUlIZzlRak0xSXlSemNHRnVJSGc5SWpFME1pSWdlVDBpTXprd0lpSWdabTl1ZEMxemFYcGxQU0kwTUNJK1BIUjBjWEJoYmtSeVBWeDRNa005SWtacGNtVk1hV3hsVDFKa1pYSXFQand2ZEhkNGRHRnVQand2ZEhSNGRHRnVQand2ZEhSNGRHRnVQand2YzNabkBgIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19">
     <meta name="theme-color" content="#2E8B57">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -323,6 +323,7 @@
             padding: 15px;
             border-radius: 8px;
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .stats h4 {
@@ -334,6 +335,23 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 5px;
+        }
+
+        .end-session-btn {
+            width: 100%;
+            padding: 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .end-session-btn:hover {
+            background: #c82333;
         }
 
         .hidden {
@@ -486,6 +504,53 @@
             font-size: 12px;
             border: 1px solid #ffeaa7;
         }
+
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .confirm-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 300px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .confirm-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .confirm-yes {
+            background: #dc3545;
+            color: white;
+        }
+
+        .confirm-no {
+            background: #6c757d;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -497,7 +562,19 @@
             <input type="text" id="setupToken" placeholder="Personal Access Token" />
             <input type="text" id="setupBaseId" placeholder="Base ID (app...)" />
             <input type="text" id="setupTableName" placeholder="Table Name" />
-            <button onclick="saveSetup()">Save & Continue</button>
+            <button id="saveSetupBtn">Save & Continue</button>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="confirm-modal">
+        <div class="confirm-content">
+            <h3>End Session?</h3>
+            <p style="color: #666; margin-top: 10px;">Are you sure you want to end this session?</p>
+            <div class="confirm-buttons">
+                <button class="confirm-yes" id="confirmEndBtn">Yes, End Session</button>
+                <button class="confirm-no" id="cancelEndBtn">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -515,16 +592,16 @@
         <!-- User Selector -->
         <div class="user-selector">
             <label style="font-weight: 600; color: #333;">User:</label>
-            <select id="userSelect" onchange="switchUser()">
+            <select id="userSelect">
                 <option value="">Select User</option>
             </select>
-            <button class="add-user-btn" onclick="addNewUser()">+ Add User</button>
+            <button class="add-user-btn" id="addUserBtn">+ Add User</button>
         </div>
         
         <!-- Tab Navigation -->
         <div class="tab-container">
-            <button class="tab active" onclick="showTab('logging')">Log Putts</button>
-            <button class="tab" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="tab active" data-tab="logging">Log Putts</button>
+            <button class="tab" data-tab="dashboard">Dashboard</button>
         </div>
         
         <!-- Logging Tab Content -->
@@ -534,8 +611,8 @@
                     📡 Offline mode - data will sync when online
                 </div>
                 
-                <!-- Setup Section -->
-                <div class="setup-section">
+                <!-- Setup Section - Only visible when no session is active -->
+                <div id="setupSection" class="setup-section">
                     <h3>Session Setup</h3>
                     <div class="input-group">
                         <label for="distance">Distance (feet)</label>
@@ -545,63 +622,63 @@
                         <label for="puttsPerSet">Putts per Set</label>
                         <input type="number" id="puttsPerSet" placeholder="5" min="1" max="20">
                     </div>
-                    <button class="set-button" onclick="startSession()">Start Session</button>
+                    <button class="set-button" id="startSessionBtn">Start Session</button>
                 </div>
 
-                <!-- Current Session Display -->
-                <div id="currentSession" class="current-session hidden">
-                    <div class="session-info">
-                        <span>Distance: <span id="currentDistance"></span> ft</span>
-                        <span>Per Set: <span id="currentPutts"></span> putts</span>
+                <!-- Active Session Content - Only visible during active session -->
+                <div id="activeSessionContent" class="hidden">
+                    <!-- Current Session Display -->
+                    <div id="currentSession" class="current-session">
+                        <div class="session-info">
+                            <span>Distance: <span id="currentDistance"></span> ft</span>
+                            <span>Per Set: <span id="currentPutts"></span> putts</span>
+                        </div>
+                        <div class="session-info">
+                            <span>User: <span id="currentUser"></span></span>
+                        </div>
                     </div>
-                    <div class="session-info">
-                        <span>User: <span id="currentUser"></span></span>
-                        <button onclick="endSession()" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">End Session</button>
-                    </div>
-                </div>
 
-                <!-- Success/Error Messages -->
-                <div id="messageArea"></div>
+                    <!-- Success/Error Messages -->
+                    <div id="messageArea"></div>
 
-                <!-- Quick Logging Section -->
-                <div id="quickLogSection" class="quick-log hidden">
-                    <h3>Log Makes</h3>
-                    
-                    <!-- Preset Buttons -->
-                    <div class="preset-buttons">
-                        <button class="preset-btn" onclick="setMakes(0)">0</button>
-                        <button class="preset-btn" onclick="setMakes(1)">1</button>
-                        <button class="preset-btn" onclick="setMakes(2)">2</button>
-                        <button class="preset-btn" onclick="setMakes(3)">3</button>
-                        <button class="preset-btn" onclick="setMakes(4)">4</button>
-                        <button class="preset-btn" onclick="setMakes(5)">5</button>
+                    <!-- Quick Logging Section -->
+                    <div id="quickLogSection" class="quick-log">
+                        <h3>Log Makes</h3>
+                        
+                        <!-- Preset Buttons -->
+                        <div class="preset-buttons" id="presetButtons">
+                            <!-- Buttons will be dynamically generated -->
+                        </div>
+                        
+                        <div class="makes-input">
+                            <input type="number" id="makes" placeholder="0" min="0" max="20">
+                            <button class="log-set-btn" id="logSetBtn">Log Set</button>
+                        </div>
                     </div>
-                    
-                    <div class="makes-input">
-                        <input type="number" id="makes" placeholder="Makes" min="0" max="20">
-                        <button class="log-set-btn" onclick="logSet()">Log Set</button>
-                    </div>
-                </div>
 
-                <!-- Session Stats -->
-                <div id="sessionStats" class="stats hidden">
-                    <h4>Session Stats</h4>
-                    <div class="stat-row">
-                        <span>Sets Logged:</span>
-                        <span id="setsCount">0</span>
+                    <!-- Session Stats -->
+                    <div id="sessionStats" class="stats">
+                        <h4>Session Stats</h4>
+                        <div class="stat-row">
+                            <span>Sets Logged:</span>
+                            <span id="setsCount">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Total Attempts:</span>
+                            <span id="totalAttempts">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Total Makes:</span>
+                            <span id="totalMakes">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Session Average:</span>
+                            <span id="sessionAverage">0%</span>
+                        </div>
                     </div>
-                    <div class="stat-row">
-                        <span>Total Attempts:</span>
-                        <span id="totalAttempts">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span>Total Makes:</span>
-                        <span id="totalMakes">0</span>
-                    </div>
-                    <div class="stat-row">
-                        <span>Session Average:</span>
-                        <span id="sessionAverage">0%</span>
-                    </div>
+
+                    <!-- End Session Button -->
+                    <button class="end-session-btn" id="endSessionBtn">End Session</button>
                 </div>
             </div>
         </div>
@@ -614,11 +691,11 @@
                 <!-- Distance Selector -->
                 <div class="distance-selector">
                     <h4>Select Distance:</h4>
-                    <div class="distance-buttons">
-                        <button class="distance-btn active" onclick="selectDistance(15)">15ft</button>
-                        <button class="distance-btn" onclick="selectDistance(20)">20ft</button>
-                        <button class="distance-btn" onclick="selectDistance(25)">25ft</button>
-                        <button class="distance-btn" onclick="selectDistance(30)">30ft</button>
+                    <div class="distance-buttons" id="distanceButtons">
+                        <button class="distance-btn active" data-distance="15">15ft</button>
+                        <button class="distance-btn" data-distance="20">20ft</button>
+                        <button class="distance-btn" data-distance="25">25ft</button>
+                        <button class="distance-btn" data-distance="30">30ft</button>
                     </div>
                 </div>
 
@@ -642,6 +719,7 @@
     </div>
 
     <script>
+        // Global variables
         let AIRTABLE_CONFIG = {
             token: '',
             baseId: '',
@@ -668,18 +746,58 @@
             checkSetup();
             loadUsers();
             updateOnlineStatus();
+            setupEventListeners();
             
             document.getElementById('distance').value = '15';
             document.getElementById('puttsPerSet').value = '5';
+        });
+
+        // Setup all event listeners
+        function setupEventListeners() {
+            // Setup button
+            document.getElementById('saveSetupBtn').addEventListener('click', saveSetup);
             
+            // User management
+            document.getElementById('userSelect').addEventListener('change', switchUser);
+            document.getElementById('addUserBtn').addEventListener('click', addNewUser);
+            
+            // Tab navigation
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    showTab(this.dataset.tab);
+                });
+            });
+            
+            // Session management
+            document.getElementById('startSessionBtn').addEventListener('click', startSession);
+            document.getElementById('logSetBtn').addEventListener('click', logSet);
+            document.getElementById('endSessionBtn').addEventListener('click', showEndSessionConfirm);
+            
+            // Confirmation modal
+            document.getElementById('confirmEndBtn').addEventListener('click', confirmEndSession);
+            document.getElementById('cancelEndBtn').addEventListener('click', cancelEndSession);
+            
+            // Distance buttons
+            document.querySelectorAll('.distance-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selectDistance(parseInt(this.dataset.distance));
+                });
+            });
+            
+            // Install prompt
+            document.getElementById('installPrompt').addEventListener('click', handleInstallPrompt);
+            
+            // Keyboard shortcuts
             document.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !currentSessionData.isActive) {
-                    startSession();
-                } else if (e.key === 'Enter' && currentSessionData.isActive) {
-                    logSet();
+                if (e.key === 'Enter') {
+                    if (!currentSessionData.isActive) {
+                        startSession();
+                    } else {
+                        logSet();
+                    }
                 }
             });
-        });
+        }
 
         // Setup and Configuration
         function checkSetup() {
@@ -703,7 +821,6 @@
             AIRTABLE_CONFIG = { token, baseId, tableName };
             localStorage.setItem('airtableConfig', JSON.stringify(AIRTABLE_CONFIG));
             document.getElementById('setupOverlay').style.display = 'none';
-            showMessage('Configuration saved successfully!', 'success');
         }
 
         // User Management
@@ -772,7 +889,7 @@
             document.getElementById('installPrompt').style.display = 'block';
         });
 
-        document.getElementById('installPrompt').addEventListener('click', async () => {
+        async function handleInstallPrompt() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
@@ -781,7 +898,7 @@
                 }
                 deferredPrompt = null;
             }
-        });
+        }
 
         // Service Worker Registration
         if ('serviceWorker' in navigator) {
@@ -867,10 +984,12 @@
             
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
+                if (tab.dataset.tab === tabName) {
+                    tab.classList.add('active');
+                }
             });
             
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
             
             if (tabName === 'dashboard') {
                 loadDashboardData();
@@ -883,8 +1002,10 @@
             
             document.querySelectorAll('.distance-btn').forEach(btn => {
                 btn.classList.remove('active');
+                if (parseInt(btn.dataset.distance) === distance) {
+                    btn.classList.add('active');
+                }
             });
-            event.target.classList.add('active');
             
             updateChart();
             updateSessions();
@@ -1079,9 +1200,9 @@
             document.getElementById('currentPutts').textContent = puttsPerSet;
             document.getElementById('currentUser').textContent = currentUser;
 
-            document.getElementById('currentSession').classList.remove('hidden');
-            document.getElementById('quickLogSection').classList.remove('hidden');
-            document.getElementById('sessionStats').classList.remove('hidden');
+            // Hide setup section and show active session content
+            document.getElementById('setupSection').classList.add('hidden');
+            document.getElementById('activeSessionContent').classList.remove('hidden');
 
             updatePresetButtons(parseInt(puttsPerSet));
 
@@ -1089,14 +1210,14 @@
         }
 
         function updatePresetButtons(maxPutts) {
-            const container = document.querySelector('.preset-buttons');
+            const container = document.getElementById('presetButtons');
             container.innerHTML = '';
             
             for (let i = 0; i <= Math.min(maxPutts, 10); i++) {
                 const btn = document.createElement('button');
                 btn.className = 'preset-btn';
                 btn.textContent = i;
-                btn.onclick = () => setMakes(i);
+                btn.addEventListener('click', () => setMakes(i));
                 container.appendChild(btn);
             }
         }
@@ -1193,24 +1314,37 @@
             document.getElementById('sessionAverage').textContent = sessionAverage + '%';
         }
 
-        function endSession() {
+        function showEndSessionConfirm() {
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function cancelEndSession() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        function confirmEndSession() {
             currentSessionData.isActive = false;
             
-            document.getElementById('currentSession').classList.add('hidden');
-            document.getElementById('quickLogSection').classList.add('hidden');
-            document.getElementById('sessionStats').classList.add('hidden');
+            // Show setup section and hide active session content
+            document.getElementById('setupSection').classList.remove('hidden');
+            document.getElementById('activeSessionContent').classList.add('hidden');
+            document.getElementById('confirmModal').style.display = 'none';
 
             showMessage('Session ended. Set up a new session above.', 'success');
         }
 
         function showMessage(message, type) {
             const messageArea = document.getElementById('messageArea');
+            if (!messageArea) return; // Exit if message area doesn't exist
+            
             const messageClass = type === 'error' ? 'error-message' : 'success-message';
             
             messageArea.innerHTML = `<div class="${messageClass}">${message}</div>`;
             
             setTimeout(() => {
-                messageArea.innerHTML = '';
+                if (messageArea) {
+                    messageArea.innerHTML = '';
+                }
             }, 3000);
         }
     </script>
