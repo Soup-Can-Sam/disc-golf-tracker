@@ -254,7 +254,7 @@
 
         .sessions-scroll {
             max-height: 200px;
-            overflow-y: hidden;
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -396,6 +396,7 @@
             display: flex;
             gap: 16px;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .control-group {
@@ -463,9 +464,9 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
-            padding-bottom: 80px;
             background: #FFFFFF;
-            overflow-y: hidden;
+            overflow: hidden;
+            position: relative;
         }
 
         .button-grid {
@@ -473,6 +474,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             margin-bottom: 20px;
+            flex-shrink: 0;
         }
 
         .number-btn {
@@ -518,6 +520,7 @@
             position: relative;
             overflow: hidden;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
 
         .log-button:active {
@@ -572,6 +575,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 8px;
+            flex-shrink: 0;
         }
 
         .stats-bar .stat-value {
@@ -594,54 +598,55 @@
         }
 
         /* Recent Sets */
-/* Recent Sets */
-.recent-sets {
-    background: #F5F5F5;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 16px;
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
+        .recent-sets {
+            background: #F5F5F5;
+            border-radius: 8px;
+            padding: 12px;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-.recent-sets-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: #686A6C;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
-    flex-shrink: 0;
-}
+        .recent-sets-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #686A6C;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
 
-#recentSetsList {
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
-    padding-right: 4px;
-}
+        #recentSetsList {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+            padding-right: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
 
-/* Scrollbar styling for recent sets */
-#recentSetsList::-webkit-scrollbar {
-    width: 6px;
-}
+        /* Subtle scrollbar styling */
+        #recentSetsList::-webkit-scrollbar {
+            width: 4px;
+        }
 
-#recentSetsList::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 3px;
-}
+        #recentSetsList::-webkit-scrollbar-track {
+            background: transparent;
+        }
 
-#recentSetsList::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-}
+        #recentSetsList::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 2px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
 
-#recentSetsList::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.3);
-}
+        #recentSetsList:hover::-webkit-scrollbar-thumb {
+            opacity: 1;
+        }
+
         .recent-set-item {
             display: flex;
             justify-content: space-between;
@@ -674,12 +679,10 @@
 
         /* Bottom Session Controls */
         .bottom-controls {
-            position: fixed;
+            position: absolute;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 400px;
+            left: 0;
+            right: 0;
             display: flex;
             gap: 8px;
             padding: 12px;
@@ -916,6 +919,36 @@
             color: #1C1F23;
         }
 
+        /* Fireworks */
+        .fireworks-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2000;
+        }
+
+        .firework-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Animations */
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes checkmark {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
         /* Chart Styles */
         .chart-svg {
             width: 100%;
@@ -973,10 +1006,6 @@
             display: none !important;
         }
 
-        @keyframes spinner {
-            to { transform: rotate(360deg); }
-        }
-
         .loading-indicator {
             position: absolute;
             top: 50%;
@@ -992,7 +1021,7 @@
         <!-- Landing Page -->
         <div id="landingPage" class="page">
             <div class="header">
-                <span class="version">P2.0.2</span>
+                <span class="version">P2.0.3</span>
                 <h1>Putting Tracker</h1>
                 <button class="header-icon" id="settingsBtn">
                     <span class="settings-icon">⚙️</span>
@@ -1058,7 +1087,7 @@
         <!-- Active Session Page -->
         <div id="activeSessionPage" class="page hidden">
             <div class="header">
-                <span class="version">P2.0.2</span>
+                <span class="version">P2.0.3</span>
                 <h1>Active Session</h1>
                 <div class="header-icon">
                     <div class="sync-status online" id="sessionSyncStatus">●</div>
@@ -1121,7 +1150,7 @@
         <!-- Settings Page -->
         <div id="settingsPage" class="page hidden">
             <div class="header">
-                <span class="version">P2.0.2</span>
+                <span class="version">P2.0.3</span>
                 <h1>Settings</h1>
                 <button class="header-icon" id="closeSettingsBtn">
                     <span style="color: white; font-size: 24px;">×</span>
@@ -1194,9 +1223,12 @@
         </div>
     </div>
 
+    <!-- Fireworks Container -->
+    <div class="fireworks-container" id="fireworksContainer"></div>
+
     <script>
         // Global State
-        const APP_VERSION = 'P2.0.2';
+        const APP_VERSION = 'P2.0.3';
         let currentUser = '';
         let users = [];
         let airtableConfig = null;
@@ -1279,8 +1311,8 @@
             document.getElementById('exportDataBtn').addEventListener('click', exportData);
             document.getElementById('clearDataBtn').addEventListener('click', showClearDataConfirm);
             
-            // Modals
-            document.getElementById('modalCancel').addEventListener('click', hideModal);
+            // Modals - Fixed cancel button
+            document.getElementById('modalCancel').addEventListener('click', () => hideModal('confirmModal'));
             document.getElementById('closeStatsBtn').addEventListener('click', () => hideModal('statsModal'));
             document.getElementById('resumeSessionBtn').addEventListener('click', resumeSession);
             document.getElementById('discardSessionBtn').addEventListener('click', discardSession);
@@ -1852,6 +1884,11 @@
             activeSession.sets.push(setData);
             saveActiveSession();
             
+            // Check for perfect set
+            if (selectedMakes === currentPutts) {
+                triggerFireworks();
+            }
+            
             // Save to storage
             const logEntry = {
                 'Session ID': activeSession.id,
@@ -1951,24 +1988,105 @@
             document.getElementById('setsCount').textContent = activeSession.sets.length;
         }
 
-   function updateRecentSets() {
-    if (!activeSession || activeSession.sets.length === 0) {
-        document.getElementById('recentSetsList').innerHTML = '<div class="no-sets">No sets logged yet</div>';
-        return;
-    }
-    
-    // Show all sets in reverse order (most recent first)
-    const allSets = activeSession.sets.slice().reverse();
-    document.getElementById('recentSetsList').innerHTML = allSets.map(set => `
-        <div class="recent-set-item">
-            <span class="set-info">Set ${set.setNumber} • ${set.distance}ft</span>
-            <span class="set-performance">${set.makes}/${set.putts} (${set.percentage}%)</span>
-        </div>
-    `).join('');
-    
-    // Auto-scroll to top to show the most recent set
-    document.getElementById('recentSetsList').scrollTop = 0;
-}
+        function updateRecentSets() {
+            if (!activeSession || activeSession.sets.length === 0) {
+                document.getElementById('recentSetsList').innerHTML = '<div class="no-sets">No sets logged yet</div>';
+                return;
+            }
+            
+            // Show all sets in reverse order (most recent first)
+            const allSets = activeSession.sets.slice().reverse();
+            document.getElementById('recentSetsList').innerHTML = allSets.map(set => `
+                <div class="recent-set-item">
+                    <span class="set-info">Set ${set.setNumber} • ${set.distance}ft</span>
+                    <span class="set-performance">${set.makes}/${set.putts} (${set.percentage}%)</span>
+                </div>
+            `).join('');
+            
+            // Auto-scroll to top to show the most recent set
+            document.getElementById('recentSetsList').scrollTop = 0;
+        }
+
+        // Fireworks Animation
+        function triggerFireworks() {
+            const logBtn = document.getElementById('logSetBtn');
+            const btnRect = logBtn.getBoundingClientRect();
+            const centerX = btnRect.left + btnRect.width / 2;
+            const centerY = btnRect.top + btnRect.height / 2;
+            
+            // First firework - slightly left
+            createFirework(centerX - 30, centerY);
+            
+            // Second firework - slightly right, delayed
+            setTimeout(() => {
+                createFirework(centerX + 30, centerY);
+            }, 200);
+        }
+
+        function createFirework(x, y) {
+            const container = document.getElementById('fireworksContainer');
+            const colors = ['#FF0066', '#00FF66', '#0066FF', '#FF6600', '#FF00FF', '#00FFFF', '#FFFF00'];
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'firework-particle';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.boxShadow = `0 0 6px ${particle.style.backgroundColor}`;
+                
+                container.appendChild(particle);
+                
+                // Animate particle
+                const angle = (Math.PI * 2 * i) / particleCount;
+                const velocity = 150 + Math.random() * 150;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+                
+                animateParticle(particle, x, y, vx, vy);
+            }
+        }
+
+        function animateParticle(particle, startX, startY, vx, vy) {
+            let x = startX;
+            let y = startY;
+            let opacity = 1;
+            let velocityX = vx;
+            let velocityY = vy;
+            
+            const gravity = 200;
+            const drag = 0.98;
+            const startTime = Date.now();
+            
+            function update() {
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / 1500;
+                
+                if (progress >= 1) {
+                    particle.remove();
+                    return;
+                }
+                
+                // Physics
+                velocityY += gravity * 0.016;
+                velocityX *= drag;
+                velocityY *= drag;
+                
+                x += velocityX * 0.016;
+                y += velocityY * 0.016;
+                opacity = 1 - progress;
+                
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.opacity = opacity;
+                particle.style.transform = `scale(${1 - progress * 0.5})`;
+                
+                requestAnimationFrame(update);
+            }
+            
+            requestAnimationFrame(update);
+        }
 
         function showSessionStats() {
             if (!activeSession) return;
