@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,940 +20,946 @@
             user-select: none;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            height: 100vh;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* Header Styles */
-        .header {
-            background: #1a237e;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .version {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 11px;
-            opacity: 0.7;
-        }
-
-        .header-icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .settings-icon {
-            color: white;
-            font-size: 20px;
-        }
-
-        .sync-status {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.2);
-        }
-
-        .sync-status.online {
-            background: rgba(76, 175, 80, 0.9);
-        }
-
-        .sync-status.offline {
-            background: rgba(255, 152, 0, 0.9);
-        }
-
-        .sync-status.syncing {
-            background: rgba(33, 150, 243, 0.9);
-        }
-
-        /* User Selector */
-        .user-selector {
-            background: #f5f5f5;
-            padding: 12px 20px;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-
-        .user-selector label {
-            font-size: 14px;
-            font-weight: 500;
-            color: #424242;
-        }
-
-        .user-selector select {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            background: white;
-            font-size: 14px;
-            color: #212121;
-        }
-
-        .add-user-btn {
-            padding: 8px 12px;
-            background: #ff5722;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        /* Landing Page Styles */
-        .landing-content {
-            flex: 1;
-            overflow-y: auto;
-            padding-bottom: 70px;
-            background: #f5f5f5;
-        }
-
-        .stats-summary {
-            background: white;
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-around;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: #1a237e;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: #757575;
-            text-transform: uppercase;
-            margin-top: 4px;
-        }
-
-        .stat-divider {
-            width: 1px;
-            background: #e0e0e0;
-            margin: 0 20px;
-        }
-
-        /* Chart Section */
-        .chart-section {
-            background: white;
-            padding: 20px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .chart-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #212121;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-
-        .chart-container {
-            height: 180px;
-            margin-bottom: 16px;
-            position: relative;
-            background: #fafafa;
-            border-radius: 4px;
-            padding: 12px;
-        }
-
-        /* Distance Selector */
-        .distance-selector {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-        }
-
-        .distance-btn {
-            padding: 10px 16px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #757575;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .distance-btn.active {
-            background: #1a237e;
-            color: white;
-            border-color: #1a237e;
-        }
-
-        /* Recent Sessions */
-        .recent-sessions {
-            background: white;
-            margin: 12px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-
-        .recent-sessions-header {
-            padding: 16px;
-            font-weight: 600;
-            color: #212121;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .sessions-scroll {
-            max-height: 200px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .session-item {
-            background: white;
-            border-bottom: 1px solid #f0f0f0;
-            transition: all 0.2s;
-        }
-
-        .session-header {
-            padding: 16px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .session-header:active {
-            background: #f5f5f5;
-        }
-
-        .session-info {
-            flex: 1;
-        }
-
-        .session-date {
-            font-size: 12px;
-            color: #757575;
-        }
-
-        .session-details {
-            font-weight: 500;
-            color: #212121;
-            margin-top: 4px;
-            font-size: 14px;
-        }
-
-        .expand-icon {
-            font-size: 12px;
-            color: #757575;
-            transition: transform 0.2s;
-        }
-
-        .session-item.expanded .expand-icon {
-            transform: rotate(180deg);
-        }
-
-        .session-sets {
-            padding: 0 16px 16px 16px;
-            display: none;
-            background: #fafafa;
-        }
-
-        .session-item.expanded .session-sets {
-            display: block;
-        }
-
-        .set-item {
-            padding: 8px 12px;
-            background: white;
-            border-radius: 4px;
-            margin-top: 8px;
-            font-size: 13px;
-            display: flex;
-            justify-content: space-between;
-            border: 1px solid #e0e0e0;
-        }
-
-        .set-number {
-            color: #757575;
-            font-weight: 500;
-        }
-
-        .set-result {
-            color: #212121;
-            font-weight: 600;
-        }
-
-        /* Fixed Bottom Button */
-        .bottom-banner {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 400px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-            padding: 12px;
-            z-index: 100;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-        }
-
-        .start-putting-btn {
-            width: 100%;
-            padding: 16px;
-            background: #ff5722;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .start-putting-btn:active {
-            background: #f4511e;
-            transform: scale(0.98);
-        }
-
-        .start-putting-btn.loading {
-            color: transparent;
-        }
-
-        .start-putting-btn.loading::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            top: 50%;
-            left: 50%;
-            margin-left: -10px;
-            margin-top: -10px;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spinner 0.8s linear infinite;
-        }
-
-        /* Active Session Styles */
-        .session-controls {
-            background: #CFD2D7;
-            padding: 12px 16px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .control-group {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #FFFFFF;
-            border-radius: 8px;
-            overflow: hidden;
-            height: 44px;
-        }
-
-        .control-btn {
-            width: 44px;
-            height: 44px;
-            border: none;
-            background: #FFFFFF;
-            color: #686A6C;
-            font-size: 20px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .control-btn:first-child::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 20%;
-            height: 60%;
-            width: 1px;
-            background: #CFD2D7;
-        }
-
-        .control-btn:last-child::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 20%;
-            height: 60%;
-            width: 1px;
-            background: #CFD2D7;
-        }
-
-        .control-btn:active {
-            background: #F5F5F5;
-        }
-
-        .control-value {
-            flex: 1;
-            text-align: center;
-            font-weight: 600;
-            color: #1a237e;
-            font-size: 16px;
-            padding: 0 8px;
-        }
-
-        .session-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            padding-bottom: 80px;
-            background: #FFFFFF;
-            overflow-y: auto;
-        }
-
-        .button-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .number-btn {
-            aspect-ratio: 1;
-            background: #CFD2D7;
-            color: #1C1F23;
-            border: 3px solid #CFD2D7;
-            border-radius: 12px;
-            font-size: 28px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .number-btn:active {
-            transform: scale(0.95);
-            background: #686A6C;
-            color: #FFFFFF;
-        }
-
-        .number-btn.selected {
-            background: #1a237e;
-            color: #FFFFFF;
-            border-color: #1a237e;
-        }
-
-        .log-button {
-            width: 100%;
-            padding: 18px;
-            background: #ff5722;
-            color: #FFFFFF;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.2s;
-        }
-
-        .log-button:active {
-            transform: scale(0.98);
-        }
-
-        .log-button.loading {
-            color: transparent;
-        }
-
-        .log-button.loading::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            top: 50%;
-            left: 50%;
-            margin-left: -10px;
-            margin-top: -10px;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spinner 0.8s linear infinite;
-        }
-
-        .log-button.success {
-            background: #4CAF50;
-            color: transparent;
-        }
-
-        .log-button.success::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #FFFFFF;
-            font-size: 24px;
-            animation: checkmark 0.3s ease-out;
-        }
-
-        .log-button.offline {
-            background: #FF9800;
-        }
-
-        /* Stats Bar */
-        .stats-bar {
-            background: #F5F5F5;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .stats-bar .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1C1F23;
-            display: block;
-        }
-
-        .stats-bar .stat-label {
-            font-size: 10px;
-            color: #686A6C;
-            text-transform: uppercase;
-            margin-top: 2px;
-            letter-spacing: 0.5px;
-        }
-
-        .stats-bar .stat-item:first-child .stat-value {
-            color: #FF5722;
-        }
-
-        /* Recent Sets */
-        .recent-sets {
-            background: #F5F5F5;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 16px;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-
-        .recent-sets-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: #686A6C;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        .recent-set-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-            font-size: 14px;
-            border-bottom: 1px solid #E0E0E0;
-        }
-
-        .recent-set-item:last-child {
-            border-bottom: none;
-        }
-
-        .set-info {
-            color: #686A6C;
-        }
-
-        .set-performance {
-            font-weight: 600;
-            color: #1a237e;
-        }
-
-        .no-sets {
-            text-align: center;
-            color: #9E9E9E;
-            font-style: italic;
-            padding: 20px 0;
-            font-size: 14px;
-        }
-
-        /* Bottom Session Controls */
-        .bottom-controls {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            gap: 8px;
-            padding: 12px;
-            background: #FFFFFF;
-            border-top: 1px solid #E0E0E0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-        }
-
-        .bottom-btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .stats-btn {
-            background: #686A6C;
-            color: #FFFFFF;
-        }
-
-        .stats-btn:active {
-            background: #1C1F23;
-            transform: scale(0.98);
-        }
-
-        .end-btn {
-            background: #dc3545;
-            color: #FFFFFF;
-        }
-
-        .end-btn:active {
-            background: #c82333;
-            transform: scale(0.98);
-        }
-
-        /* Settings Page */
-        .settings-content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background: #f5f5f5;
-        }
-
-        .settings-section {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .settings-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a237e;
-            margin-bottom: 16px;
-        }
-
-        .settings-group {
-            margin-bottom: 16px;
-        }
-
-        .settings-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            color: #424242;
-            margin-bottom: 8px;
-        }
-
-        .settings-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .settings-btn {
-            width: 100%;
-            padding: 12px;
-            background: #1a237e;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-
-        .sync-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px;
-            background: #e8f5e9;
-            border-radius: 4px;
-            font-size: 14px;
-            color: #2e7d32;
-        }
-
-        .sync-indicator.not-configured {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        /* Modals and Overlays */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            max-width: 320px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a237e;
-            margin-bottom: 12px;
-        }
-
-        .modal-text {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .modal-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .modal-btn-primary {
-            background: #1a237e;
-            color: white;
-        }
-
-        .modal-btn-secondary {
-            background: #e0e0e0;
-            color: #424242;
-        }
-
-        /* Stats Overlay */
-        .stats-modal {
-            background: #FFFFFF;
-            border-radius: 12px;
-            padding: 24px;
-            max-width: 350px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .stats-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .stats-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #1C1F23;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #686A6C;
-            cursor: pointer;
-        }
-
-        .detailed-stats {
-            display: grid;
-            gap: 16px;
-        }
-
-        .stat-group {
-            background: #F5F5F5;
-            padding: 16px;
-            border-radius: 8px;
-        }
-
-        .stat-group-title {
-            font-weight: 600;
-            color: #1C1F23;
-            margin-bottom: 8px;
-        }
-
-        .stat-detail {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 8px;
-            font-size: 14px;
-        }
-
-        .stat-detail-label {
-            color: #686A6C;
-        }
-
-        .stat-detail-value {
-            font-weight: 600;
-            color: #1C1F23;
-        }
-
-        /* Chart Styles */
-        .chart-svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .chart-line {
-            fill: none;
-            stroke: #ff5722;
-            stroke-width: 3;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .chart-point {
-            fill: #ff5722;
-            stroke: white;
-            stroke-width: 2;
-        }
-
-        .chart-grid {
-            stroke: #e0e0e0;
-            stroke-width: 1;
-            opacity: 0.5;
-        }
-
-        .chart-label {
-            font-size: 10px;
-            fill: #757575;
-        }
-
-        .chart-avg-line {
-            stroke: #1a237e;
-            stroke-width: 2;
-            stroke-dasharray: 5,5;
-            opacity: 0.5;
-        }
-
-        /* Loading States */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #757575;
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #9e9e9e;
-            font-style: italic;
-        }
-
-        /* Hidden */
-        .hidden {
-            display: none !important;
-        }
-
-        @keyframes spinner {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes checkmark {
-            from { 
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 0;
-            }
-            to { 
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-        }
-    </style>
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #f5f5f5;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .container {
+        max-width: 400px;
+        margin: 0 auto;
+        background: white;
+        height: 100vh;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    /* Header Styles */
+    .header {
+        background: #1a237e;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .version {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-size: 11px;
+        opacity: 0.7;
+    }
+
+    .header-icon {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .settings-icon {
+        color: white;
+        font-size: 20px;
+    }
+
+    .sync-status {
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.2);
+    }
+
+    .sync-status.online {
+        background: rgba(76, 175, 80, 0.9);
+    }
+
+    .sync-status.offline {
+        background: rgba(255, 152, 0, 0.9);
+    }
+
+    .sync-status.syncing {
+        background: rgba(33, 150, 243, 0.9);
+    }
+
+    /* User Selector */
+    .user-selector {
+        background: #f5f5f5;
+        padding: 12px 20px;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .user-selector label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #424242;
+    }
+
+    .user-selector select {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        background: white;
+        font-size: 14px;
+        color: #212121;
+    }
+
+    .add-user-btn {
+        padding: 8px 12px;
+        background: #ff5722;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    /* Landing Page Styles */
+    .landing-content {
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 70px;
+        background: #f5f5f5;
+    }
+
+    .stats-summary {
+        background: white;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-around;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1a237e;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: #757575;
+        text-transform: uppercase;
+        margin-top: 4px;
+    }
+
+    .stat-divider {
+        width: 1px;
+        background: #e0e0e0;
+        margin: 0 20px;
+    }
+
+    /* Chart Section */
+    .chart-section {
+        background: white;
+        padding: 20px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .chart-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #212121;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .chart-container {
+        height: 180px;
+        margin-bottom: 16px;
+        position: relative;
+        background: #fafafa;
+        border-radius: 4px;
+        padding: 12px;
+    }
+
+    .chart-container canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Distance Selector */
+    .distance-selector {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .distance-btn {
+        padding: 10px 16px;
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #757575;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .distance-btn.active {
+        background: #1a237e;
+        color: white;
+        border-color: #1a237e;
+    }
+
+    /* Recent Sessions */
+    .recent-sessions {
+        background: white;
+        margin: 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .recent-sessions-header {
+        padding: 16px;
+        font-weight: 600;
+        color: #212121;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .sessions-scroll {
+        max-height: 200px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .session-item {
+        background: white;
+        border-bottom: 1px solid #f0f0f0;
+        transition: all 0.2s;
+    }
+
+    .session-header {
+        padding: 16px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .session-header:active {
+        background: #f5f5f5;
+    }
+
+    .session-info {
+        flex: 1;
+    }
+
+    .session-date {
+        font-size: 12px;
+        color: #757575;
+    }
+
+    .session-details {
+        font-weight: 500;
+        color: #212121;
+        margin-top: 4px;
+        font-size: 14px;
+    }
+
+    .expand-icon {
+        font-size: 12px;
+        color: #757575;
+        transition: transform 0.2s;
+    }
+
+    .session-item.expanded .expand-icon {
+        transform: rotate(180deg);
+    }
+
+    .session-sets {
+        padding: 0 16px 16px 16px;
+        display: none;
+        background: #fafafa;
+    }
+
+    .session-item.expanded .session-sets {
+        display: block;
+    }
+
+    .set-item {
+        padding: 8px 12px;
+        background: white;
+        border-radius: 4px;
+        margin-top: 8px;
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        border: 1px solid #e0e0e0;
+    }
+
+    .set-number {
+        color: #757575;
+        font-weight: 500;
+    }
+
+    .set-result {
+        color: #212121;
+        font-weight: 600;
+    }
+
+    /* Fixed Bottom Button */
+    .bottom-banner {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 400px;
+        background: white;
+        border-top: 1px solid #e0e0e0;
+        padding: 12px;
+        z-index: 100;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+
+    .start-putting-btn {
+        width: 100%;
+        padding: 16px;
+        background: #ff5722;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .start-putting-btn:active {
+        background: #f4511e;
+        transform: scale(0.98);
+    }
+
+    .start-putting-btn.loading {
+        color: transparent;
+    }
+
+    .start-putting-btn.loading::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin-left: -10px;
+        margin-top: -10px;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spinner 0.8s linear infinite;
+    }
+
+    /* Active Session Styles */
+    .session-controls {
+        background: #CFD2D7;
+        padding: 12px 16px;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .control-group {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #FFFFFF;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 44px;
+    }
+
+    .control-btn {
+        width: 44px;
+        height: 44px;
+        border: none;
+        background: #FFFFFF;
+        color: #686A6C;
+        font-size: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        position: relative;
+    }
+
+    .control-btn:first-child::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 20%;
+        height: 60%;
+        width: 1px;
+        background: #CFD2D7;
+    }
+
+    .control-btn:last-child::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 20%;
+        height: 60%;
+        width: 1px;
+        background: #CFD2D7;
+    }
+
+    .control-btn:active {
+        background: #F5F5F5;
+    }
+
+    .control-value {
+        flex: 1;
+        text-align: center;
+        font-weight: 600;
+        color: #1a237e;
+        font-size: 16px;
+        padding: 0 8px;
+    }
+
+    .session-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        padding-bottom: 80px;
+        background: #FFFFFF;
+        overflow-y: auto;
+    }
+
+    .button-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .number-btn {
+        aspect-ratio: 1;
+        background: #CFD2D7;
+        color: #1C1F23;
+        border: 3px solid #CFD2D7;
+        border-radius: 12px;
+        font-size: 28px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .number-btn:active {
+        transform: scale(0.95);
+        background: #686A6C;
+        color: #FFFFFF;
+    }
+
+    .number-btn.selected {
+        background: #1a237e;
+        color: #FFFFFF;
+        border-color: #1a237e;
+    }
+
+    .log-button {
+        width: 100%;
+        padding: 18px;
+        background: #ff5722;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.2s;
+    }
+
+    .log-button:active {
+        transform: scale(0.98);
+    }
+
+    .log-button.loading {
+        color: transparent;
+    }
+
+    .log-button.loading::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin-left: -10px;
+        margin-top: -10px;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spinner 0.8s linear infinite;
+    }
+
+    .log-button.success {
+        background: #4CAF50;
+        color: transparent;
+    }
+
+    .log-button.success::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #FFFFFF;
+        font-size: 24px;
+        animation: checkmark 0.3s ease-out;
+    }
+
+    .log-button.offline {
+        background: #FF9800;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+        background: #F5F5F5;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+
+    .stats-bar .stat-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1C1F23;
+        display: block;
+    }
+
+    .stats-bar .stat-label {
+        font-size: 10px;
+        color: #686A6C;
+        text-transform: uppercase;
+        margin-top: 2px;
+        letter-spacing: 0.5px;
+    }
+
+    .stats-bar .stat-item:first-child .stat-value {
+        color: #FF5722;
+    }
+
+    /* Recent Sets */
+    .recent-sets {
+        background: #F5F5F5;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 16px;
+        max-height: 120px;
+        overflow-y: auto;
+    }
+
+    .recent-sets-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: #686A6C;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+    }
+
+    .recent-set-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        font-size: 14px;
+        border-bottom: 1px solid #E0E0E0;
+    }
+
+    .recent-set-item:last-child {
+        border-bottom: none;
+    }
+
+    .set-info {
+        color: #686A6C;
+    }
+
+    .set-performance {
+        font-weight: 600;
+        color: #1a237e;
+    }
+
+    .no-sets {
+        text-align: center;
+        color: #9E9E9E;
+        font-style: italic;
+        padding: 20px 0;
+        font-size: 14px;
+    }
+
+    /* Bottom Session Controls */
+    .bottom-controls {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 400px;
+        display: flex;
+        gap: 8px;
+        padding: 12px;
+        background: #FFFFFF;
+        border-top: 1px solid #E0E0E0;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+
+    .bottom-btn {
+        flex: 1;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .stats-btn {
+        background: #686A6C;
+        color: #FFFFFF;
+    }
+
+    .stats-btn:active {
+        background: #1C1F23;
+        transform: scale(0.98);
+    }
+
+    .end-btn {
+        background: #dc3545;
+        color: #FFFFFF;
+    }
+
+    .end-btn:active {
+        background: #c82333;
+        transform: scale(0.98);
+    }
+
+    /* Settings Page */
+    .settings-content {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        background: #f5f5f5;
+    }
+
+    .settings-section {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .settings-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a237e;
+        margin-bottom: 16px;
+    }
+
+    .settings-group {
+        margin-bottom: 16px;
+    }
+
+    .settings-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #424242;
+        margin-bottom: 8px;
+    }
+
+    .settings-input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .settings-btn {
+        width: 100%;
+        padding: 12px;
+        background: #1a237e;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 8px;
+    }
+
+    .sync-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+        background: #e8f5e9;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #2e7d32;
+    }
+
+    .sync-indicator.not-configured {
+        background: #fff3e0;
+        color: #f57c00;
+    }
+
+    /* Modals and Overlays */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 320px;
+        width: 90%;
+        text-align: center;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a237e;
+        margin-bottom: 12px;
+    }
+
+    .modal-text {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .modal-btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .modal-btn-primary {
+        background: #1a237e;
+        color: white;
+    }
+
+    .modal-btn-secondary {
+        background: #e0e0e0;
+        color: #424242;
+    }
+
+    /* Stats Overlay */
+    .stats-modal {
+        background: #FFFFFF;
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 350px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .stats-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .stats-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1C1F23;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #686A6C;
+        cursor: pointer;
+    }
+
+    .detailed-stats {
+        display: grid;
+        gap: 16px;
+    }
+
+    .stat-group {
+        background: #F5F5F5;
+        padding: 16px;
+        border-radius: 8px;
+    }
+
+    .stat-group-title {
+        font-weight: 600;
+        color: #1C1F23;
+        margin-bottom: 8px;
+    }
+
+    .stat-detail {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 14px;
+    }
+
+    .stat-detail-label {
+        color: #686A6C;
+    }
+
+    .stat-detail-value {
+        font-weight: 600;
+        color: #1C1F23;
+    }
+
+    /* Chart Styles */
+    .chart-svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    .chart-line {
+        fill: none;
+        stroke: #ff5722;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .chart-point {
+        fill: #ff5722;
+        stroke: white;
+        stroke-width: 2;
+    }
+
+    .chart-grid {
+        stroke: #e0e0e0;
+        stroke-width: 1;
+        opacity: 0.5;
+    }
+
+    .chart-label {
+        font-size: 10px;
+        fill: #757575;
+    }
+
+    .chart-avg-line {
+        stroke: #1a237e;
+        stroke-width: 2;
+        stroke-dasharray: 5,5;
+        opacity: 0.5;
+    }
+
+    /* Loading States */
+    .loading {
+        text-align: center;
+        padding: 40px;
+        color: #757575;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #9e9e9e;
+        font-style: italic;
+    }
+
+    /* Hidden */
+    .hidden {
+        display: none !important;
+    }
+
+    @keyframes spinner {
+        to { transform: rotate(360deg); }
+    }
+
+    .loading-indicator {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #757575;
+        font-size: 14px;
+    }
+</style>
+```
+
 </head>
 <body>
     <div class="container">
@@ -965,1055 +972,1179 @@
                     <span class="settings-icon">⚙️</span>
                 </button>
             </div>
-            
-            <div class="user-selector">
-                <label>User:</label>
-                <select id="userSelect">
-                    <option value="">Select User</option>
-                </select>
-                <button class="add-user-btn" id="addUserBtn">+ Add</button>
-            </div>
-            
-            <div class="landing-content">
-                <!-- Stats Summary -->
-                <div class="stats-summary">
-                    <div class="stat-item">
-                        <span class="stat-value" id="monthSessions">0</span>
-                        <span class="stat-label">Sessions This Month</span>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="totalPutts">0</span>
-                        <span class="stat-label">Putts Attempted</span>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="c1Average">0%</span>
-                        <span class="stat-label">All-Time C1 Avg</span>
-                    </div>
-                </div>
-                
-                <!-- Chart Section -->
-                <div class="chart-section">
-                    <h2 class="chart-title">Recent Session Stats</h2>
-                    <div class="chart-container">
-                        <canvas id="chartCanvas"></canvas>
-                    </div>
-                    <div class="distance-selector">
-                        <button class="distance-btn" data-distance="10">10ft</button>
-                        <button class="distance-btn active" data-distance="15">15ft</button>
-                        <button class="distance-btn" data-distance="20">20ft</button>
-                        <button class="distance-btn" data-distance="25">25ft</button>
-                        <button class="distance-btn" data-distance="30">30ft</button>
-                    </div>
-                </div>
-                
-                <!-- Recent Sessions -->
-                <div class="recent-sessions">
-                    <div class="recent-sessions-header">Recent Sessions</div>
-                    <div class="sessions-scroll" id="sessionsList">
-                        <div class="no-data">No sessions yet</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bottom-banner">
-                <button class="start-putting-btn" id="startPuttingBtn">Start Putting</button>
-            </div>
+
+```
+        <div class="user-selector">
+            <label>User:</label>
+            <select id="userSelect">
+                <option value="">Select User</option>
+            </select>
+            <button class="add-user-btn" id="addUserBtn">+ Add</button>
         </div>
-
-        <!-- Active Session Page -->
-        <div id="activeSessionPage" class="page hidden">
-            <div class="header">
-                <span class="version">P2.0.1</span>
-                <h1>Active Session</h1>
-                <div class="header-icon">
-                    <div class="sync-status online" id="sessionSyncStatus">●</div>
-                </div>
-            </div>
-
-            <div class="session-controls">
-                <div class="control-group">
-                    <button class="control-btn" id="distanceDown">−</button>
-                    <span class="control-value" id="distanceValue">15 ft</span>
-                    <button class="control-btn" id="distanceUp">+</button>
-                </div>
-                <div class="control-group">
-                    <button class="control-btn" id="puttsDown">−</button>
-                    <span class="control-value" id="puttsValue">5 putts</span>
-                    <button class="control-btn" id="puttsUp">+</button>
-                </div>
-            </div>
-
-            <div class="session-content">
-                <div class="button-grid" id="buttonGrid">
-                    <!-- Buttons will be generated dynamically -->
-                </div>
-
-                <button class="log-button" id="logSetBtn">Log Set</button>
-
-                <div class="stats-bar">
-                    <div class="stat-item">
-                        <span class="stat-value" id="sessionAvg">0%</span>
-                        <span class="stat-label">Session Avg</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="totalMakes">0</span>
-                        <span class="stat-label">Makes</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="totalAttempts">0</span>
-                        <span class="stat-label">Attempts</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value" id="setsCount">0</span>
-                        <span class="stat-label">Sets</span>
-                    </div>
-                </div>
-
-                <div class="recent-sets">
-                    <div class="recent-sets-title">Recent Sets</div>
-                    <div id="recentSetsList">
-                        <div class="no-sets">No sets logged yet</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bottom-controls">
-                <button class="bottom-btn stats-btn" id="sessionStatsBtn">Session Stats</button>
-                <button class="bottom-btn end-btn" id="endSessionBtn">End Session</button>
-            </div>
-        </div>
-
-        <!-- Settings Page -->
-        <div id="settingsPage" class="page hidden">
-            <div class="header">
-                <span class="version">P2.0.1</span>
-                <h1>Settings</h1>
-                <button class="header-icon" id="closeSettingsBtn">
-                    <span style="color: white; font-size: 24px;">×</span>
-                </button>
-            </div>
-
-            <div class="settings-content">
-                <div class="settings-section">
-                    <h2 class="settings-title">Airtable Configuration</h2>
-                    <div id="syncIndicator" class="sync-indicator not-configured">
-                        <span>⚠️</span>
-                        <span>Not configured - data saving locally only</span>
-                    </div>
-                    <div class="settings-group">
-                        <label class="settings-label">Personal Access Token</label>
-                        <input type="text" class="settings-input" id="airtableToken" placeholder="pat...">
-                    </div>
-                    <div class="settings-group">
-                        <label class="settings-label">Base ID</label>
-                        <input type="text" class="settings-input" id="airtableBaseId" placeholder="app...">
-                    </div>
-                    <div class="settings-group">
-                        <label class="settings-label">Table Name</label>
-                        <input type="text" class="settings-input" id="airtableTableName" placeholder="Putting Log">
-                    </div>
-                    <button class="settings-btn" id="saveAirtableBtn">Save Configuration</button>
-                </div>
-
-                <div class="settings-section">
-                    <h2 class="settings-title">Data Management</h2>
-                    <button class="settings-btn" id="exportDataBtn">Export Local Data</button>
-                    <button class="settings-btn" id="clearDataBtn" style="background: #dc3545; margin-top: 8px;">Clear All Data</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modals -->
-    <div id="confirmModal" class="modal-overlay">
-        <div class="modal-content">
-            <h3 class="modal-title" id="modalTitle">Confirm</h3>
-            <p class="modal-text" id="modalText">Are you sure?</p>
-            <div class="modal-buttons">
-                <button class="modal-btn modal-btn-secondary" id="modalCancel">Cancel</button>
-                <button class="modal-btn modal-btn-primary" id="modalConfirm">Confirm</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="statsModal" class="modal-overlay">
-        <div class="stats-modal">
-            <div class="stats-header">
-                <h2 class="stats-title">Session Statistics</h2>
-                <button class="close-btn" id="closeStatsBtn">×</button>
-            </div>
-            <div class="detailed-stats" id="detailedStats">
-                <!-- Stats will be populated dynamically -->
-            </div>
-        </div>
-    </div>
-
-    <div id="resumeModal" class="modal-overlay">
-        <div class="modal-content">
-            <h3 class="modal-title">Resume Session?</h3>
-            <p class="modal-text">You have an active session. Would you like to continue or start fresh?</p>
-            <div class="modal-buttons">
-                <button class="modal-btn modal-btn-secondary" id="discardSessionBtn">Start Fresh</button>
-                <button class="modal-btn modal-btn-primary" id="resumeSessionBtn">Resume</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Global State
-        const APP_VERSION = 'P2.0.1';
-        let currentUser = '';
-        let users = [];
-        let airtableConfig = null;
-        let isOnline = navigator.onLine;
-        let selectedChartDistance = 15;
-        let currentPage = 'landing';
         
-        // Session State
-        let activeSession = null;
-        let selectedMakes = null;
-        let currentDistance = 15;
-        let currentPutts = 5;
+        <div class="landing-content">
+            <!-- Stats Summary -->
+            <div class="stats-summary">
+                <div class="stat-item">
+                    <span class="stat-value" id="monthSessions">0</span>
+                    <span class="stat-label">Sessions This Month</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value" id="totalPutts">0</span>
+                    <span class="stat-label">Putts Attempted</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value" id="c1Average">0%</span>
+                    <span class="stat-label">All-Time C1 Avg</span>
+                </div>
+            </div>
+            
+            <!-- Chart Section -->
+            <div class="chart-section">
+                <h2 class="chart-title">Recent Session Stats</h2>
+                <div class="chart-container">
+                    <canvas id="chartCanvas"></canvas>
+                </div>
+                <div class="distance-selector">
+                    <button class="distance-btn" data-distance="10">10ft</button>
+                    <button class="distance-btn active" data-distance="15">15ft</button>
+                    <button class="distance-btn" data-distance="20">20ft</button>
+                    <button class="distance-btn" data-distance="25">25ft</button>
+                    <button class="distance-btn" data-distance="30">30ft</button>
+                </div>
+            </div>
+            
+            <!-- Recent Sessions -->
+            <div class="recent-sessions">
+                <div class="recent-sessions-header">Recent Sessions</div>
+                <div class="sessions-scroll" id="sessionsList">
+                    <div class="no-data">No sessions yet</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-banner">
+            <button class="start-putting-btn" id="startPuttingBtn">Start Putting</button>
+        </div>
+    </div>
 
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-            setupEventListeners();
-            checkForActiveSession();
-        });
+    <!-- Active Session Page -->
+    <div id="activeSessionPage" class="page hidden">
+        <div class="header">
+            <span class="version">P2.0.1</span>
+            <h1>Active Session</h1>
+            <div class="header-icon">
+                <div class="sync-status online" id="sessionSyncStatus">●</div>
+            </div>
+        </div>
 
-        function initializeApp() {
-            // Load saved data
-            users = JSON.parse(localStorage.getItem('users') || '[]');
-            currentUser = localStorage.getItem('currentUser') || '';
-            airtableConfig = JSON.parse(localStorage.getItem('airtableConfig') || 'null');
-            
-            // Load active session if exists
-            const savedSession = localStorage.getItem('activeSession');
-            if (savedSession) {
-                activeSession = JSON.parse(savedSession);
-            }
-            
-            // Initialize UI
-            loadUsers();
-            updateOnlineStatus();
-            updateStats();
-            updateChart();
-            loadRecentSessions();
-            
-            // Update settings UI
-            if (airtableConfig) {
-                document.getElementById('airtableToken').value = airtableConfig.token || '';
-                document.getElementById('airtableBaseId').value = airtableConfig.baseId || '';
-                document.getElementById('airtableTableName').value = airtableConfig.tableName || '';
-                updateSyncIndicator(true);
-            }
+        <div class="session-controls">
+            <div class="control-group">
+                <button class="control-btn" id="distanceDown">−</button>
+                <span class="control-value" id="distanceValue">15 ft</span>
+                <button class="control-btn" id="distanceUp">+</button>
+            </div>
+            <div class="control-group">
+                <button class="control-btn" id="puttsDown">−</button>
+                <span class="control-value" id="puttsValue">5 putts</span>
+                <button class="control-btn" id="puttsUp">+</button>
+            </div>
+        </div>
+
+        <div class="session-content">
+            <div class="button-grid" id="buttonGrid">
+                <!-- Buttons will be generated dynamically -->
+            </div>
+
+            <button class="log-button" id="logSetBtn">Log Set</button>
+
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-value" id="sessionAvg">0%</span>
+                    <span class="stat-label">Session Avg</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="totalMakes">0</span>
+                    <span class="stat-label">Makes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="totalAttempts">0</span>
+                    <span class="stat-label">Attempts</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="setsCount">0</span>
+                    <span class="stat-label">Sets</span>
+                </div>
+            </div>
+
+            <div class="recent-sets">
+                <div class="recent-sets-title">Recent Sets</div>
+                <div id="recentSetsList">
+                    <div class="no-sets">No sets logged yet</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-controls">
+            <button class="bottom-btn stats-btn" id="sessionStatsBtn">Session Stats</button>
+            <button class="bottom-btn end-btn" id="endSessionBtn">End Session</button>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settingsPage" class="page hidden">
+        <div class="header">
+            <span class="version">P2.0.1</span>
+            <h1>Settings</h1>
+            <button class="header-icon" id="closeSettingsBtn">
+                <span style="color: white; font-size: 24px;">×</span>
+            </button>
+        </div>
+
+        <div class="settings-content">
+            <div class="settings-section">
+                <h2 class="settings-title">Airtable Configuration</h2>
+                <div id="syncIndicator" class="sync-indicator not-configured">
+                    <span>⚠️</span>
+                    <span>Not configured - data saving locally only</span>
+                </div>
+                <div class="settings-group">
+                    <label class="settings-label">Personal Access Token</label>
+                    <input type="text" class="settings-input" id="airtableToken" placeholder="pat...">
+                </div>
+                <div class="settings-group">
+                    <label class="settings-label">Base ID</label>
+                    <input type="text" class="settings-input" id="airtableBaseId" placeholder="app...">
+                </div>
+                <div class="settings-group">
+                    <label class="settings-label">Table Name</label>
+                    <input type="text" class="settings-input" id="airtableTableName" placeholder="Putting Log">
+                </div>
+                <button class="settings-btn" id="saveAirtableBtn">Save Configuration</button>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="settings-title">Data Management</h2>
+                <button class="settings-btn" id="exportDataBtn">Export Local Data</button>
+                <button class="settings-btn" id="clearDataBtn" style="background: #dc3545; margin-top: 8px;">Clear All Data</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<div id="confirmModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 class="modal-title" id="modalTitle">Confirm</h3>
+        <p class="modal-text" id="modalText">Are you sure?</p>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-secondary" id="modalCancel">Cancel</button>
+            <button class="modal-btn modal-btn-primary" id="modalConfirm">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div id="statsModal" class="modal-overlay">
+    <div class="stats-modal">
+        <div class="stats-header">
+            <h2 class="stats-title">Session Statistics</h2>
+            <button class="close-btn" id="closeStatsBtn">×</button>
+        </div>
+        <div class="detailed-stats" id="detailedStats">
+            <!-- Stats will be populated dynamically -->
+        </div>
+    </div>
+</div>
+
+<div id="resumeModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 class="modal-title">Resume Session?</h3>
+        <p class="modal-text">You have an active session. Would you like to continue or start fresh?</p>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-secondary" id="discardSessionBtn">Start Fresh</button>
+            <button class="modal-btn modal-btn-primary" id="resumeSessionBtn">Resume</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Global State
+    const APP_VERSION = 'P2.0.1';
+    let currentUser = '';
+    let users = [];
+    let airtableConfig = null;
+    let isOnline = navigator.onLine;
+    let selectedChartDistance = 15;
+    let currentPage = 'landing';
+    
+    // Session State
+    let activeSession = null;
+    let selectedMakes = null;
+    let currentDistance = 15;
+    let currentPutts = 5;
+
+    // Initialize App
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeApp();
+    });
+
+    async function initializeApp() {
+        // Load saved data
+        users = JSON.parse(localStorage.getItem('users') || '[]');
+        currentUser = localStorage.getItem('currentUser') || '';
+        airtableConfig = JSON.parse(localStorage.getItem('airtableConfig') || 'null');
+        
+        // Load active session if exists
+        const savedSession = localStorage.getItem('activeSession');
+        if (savedSession) {
+            activeSession = JSON.parse(savedSession);
         }
-
-        function setupEventListeners() {
-            // Navigation
-            document.getElementById('settingsBtn').addEventListener('click', () => showPage('settings'));
-            document.getElementById('closeSettingsBtn').addEventListener('click', () => showPage('landing'));
-            
-            // User Management
-            document.getElementById('userSelect').addEventListener('change', handleUserChange);
-            document.getElementById('addUserBtn').addEventListener('click', addNewUser);
-            
-            // Landing Page
-            document.getElementById('startPuttingBtn').addEventListener('click', startPutting);
-            document.querySelectorAll('.distance-btn').forEach(btn => {
-                btn.addEventListener('click', () => selectChartDistance(parseInt(btn.dataset.distance)));
-            });
-            
-            // Active Session Controls
-            document.getElementById('distanceDown').addEventListener('click', () => adjustDistance(-5));
-            document.getElementById('distanceUp').addEventListener('click', () => adjustDistance(5));
-            document.getElementById('puttsDown').addEventListener('click', () => adjustPutts(-1));
-            document.getElementById('puttsUp').addEventListener('click', () => adjustPutts(1));
-            document.getElementById('logSetBtn').addEventListener('click', logSet);
-            document.getElementById('sessionStatsBtn').addEventListener('click', showSessionStats);
-            document.getElementById('endSessionBtn').addEventListener('click', showEndSessionConfirm);
-            
-            // Settings
-            document.getElementById('saveAirtableBtn').addEventListener('click', saveAirtableConfig);
-            document.getElementById('exportDataBtn').addEventListener('click', exportData);
-            document.getElementById('clearDataBtn').addEventListener('click', showClearDataConfirm);
-            
-            // Modals
-            document.getElementById('modalCancel').addEventListener('click', hideModal);
-            document.getElementById('closeStatsBtn').addEventListener('click', () => hideModal('statsModal'));
-            document.getElementById('resumeSessionBtn').addEventListener('click', resumeSession);
-            document.getElementById('discardSessionBtn').addEventListener('click', discardSession);
-            
-            // Online/Offline
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
+        
+        // Initialize UI
+        loadUsers();
+        updateOnlineStatus();
+        
+        // Load data - these are now async
+        await Promise.all([
+            updateStats(),
+            updateChart(),
+            loadRecentSessions()
+        ]);
+        
+        // Update settings UI
+        if (airtableConfig) {
+            document.getElementById('airtableToken').value = airtableConfig.token || '';
+            document.getElementById('airtableBaseId').value = airtableConfig.baseId || '';
+            document.getElementById('airtableTableName').value = airtableConfig.tableName || '';
         }
+        updateSyncIndicator(!!airtableConfig);
+        
+        setupEventListeners();
+        checkForActiveSession();
+    }
 
-        // Page Navigation
-        function showPage(page) {
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-            
-            switch(page) {
-                case 'landing':
-                    document.getElementById('landingPage').classList.remove('hidden');
-                    updateStats();
-                    updateChart();
-                    loadRecentSessions();
-                    break;
-                case 'session':
-                    document.getElementById('activeSessionPage').classList.remove('hidden');
-                    updateButtonGrid();
-                    break;
-                case 'settings':
-                    document.getElementById('settingsPage').classList.remove('hidden');
-                    break;
-            }
-            
-            currentPage = page;
-        }
-
+    function setupEventListeners() {
+        // Navigation
+        document.getElementById('settingsBtn').addEventListener('click', () => showPage('settings'));
+        document.getElementById('closeSettingsBtn').addEventListener('click', () => showPage('landing'));
+        
         // User Management
-        function loadUsers() {
-            const select = document.getElementById('userSelect');
-            select.innerHTML = '<option value="">Select User</option>';
-            
-            users.forEach(user => {
-                const option = document.createElement('option');
-                option.value = user;
-                option.textContent = user;
-                select.appendChild(option);
-            });
-            
-            if (currentUser && users.includes(currentUser)) {
-                select.value = currentUser;
+        document.getElementById('userSelect').addEventListener('change', handleUserChange);
+        document.getElementById('addUserBtn').addEventListener('click', addNewUser);
+        
+        // Landing Page
+        document.getElementById('startPuttingBtn').addEventListener('click', startPutting);
+        document.querySelectorAll('.distance-btn').forEach(btn => {
+            btn.addEventListener('click', () => selectChartDistance(parseInt(btn.dataset.distance)));
+        });
+        
+        // Active Session Controls
+        document.getElementById('distanceDown').addEventListener('click', () => adjustDistance(-5));
+        document.getElementById('distanceUp').addEventListener('click', () => adjustDistance(5));
+        document.getElementById('puttsDown').addEventListener('click', () => adjustPutts(-1));
+        document.getElementById('puttsUp').addEventListener('click', () => adjustPutts(1));
+        document.getElementById('logSetBtn').addEventListener('click', logSet);
+        document.getElementById('sessionStatsBtn').addEventListener('click', showSessionStats);
+        document.getElementById('endSessionBtn').addEventListener('click', showEndSessionConfirm);
+        
+        // Settings
+        document.getElementById('saveAirtableBtn').addEventListener('click', saveAirtableConfig);
+        document.getElementById('exportDataBtn').addEventListener('click', exportData);
+        document.getElementById('clearDataBtn').addEventListener('click', showClearDataConfirm);
+        
+        // Modals
+        document.getElementById('modalCancel').addEventListener('click', hideModal);
+        document.getElementById('closeStatsBtn').addEventListener('click', () => hideModal('statsModal'));
+        document.getElementById('resumeSessionBtn').addEventListener('click', resumeSession);
+        document.getElementById('discardSessionBtn').addEventListener('click', discardSession);
+        
+        // Online/Offline
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+    }
+
+    // Page Navigation
+    function showPage(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+        
+        switch(page) {
+            case 'landing':
+                document.getElementById('landingPage').classList.remove('hidden');
+                updateStats();
+                updateChart();
+                loadRecentSessions();
+                break;
+            case 'session':
+                document.getElementById('activeSessionPage').classList.remove('hidden');
+                updateButtonGrid();
+                break;
+            case 'settings':
+                document.getElementById('settingsPage').classList.remove('hidden');
+                break;
+        }
+        
+        currentPage = page;
+    }
+
+    // User Management
+    function loadUsers() {
+        const select = document.getElementById('userSelect');
+        select.innerHTML = '<option value="">Select User</option>';
+        
+        users.forEach(user => {
+            const option = document.createElement('option');
+            option.value = user;
+            option.textContent = user;
+            select.appendChild(option);
+        });
+        
+        if (currentUser && users.includes(currentUser)) {
+            select.value = currentUser;
+        }
+    }
+
+    async function handleUserChange() {
+        currentUser = document.getElementById('userSelect').value;
+        localStorage.setItem('currentUser', currentUser);
+        await Promise.all([
+            updateStats(),
+            updateChart(),
+            loadRecentSessions()
+        ]);
+    }
+
+    function addNewUser() {
+        const name = prompt('Enter user name:');
+        if (name && name.trim()) {
+            const trimmed = name.trim();
+            if (!users.includes(trimmed)) {
+                users.push(trimmed);
+                localStorage.setItem('users', JSON.stringify(users));
+                loadUsers();
+                document.getElementById('userSelect').value = trimmed;
+                handleUserChange();
             }
         }
+    }
 
-        function handleUserChange() {
-            currentUser = document.getElementById('userSelect').value;
-            localStorage.setItem('currentUser', currentUser);
-            updateStats();
-            updateChart();
-            loadRecentSessions();
+    // Stats and Chart
+    async function updateStats() {
+        if (!currentUser) {
+            document.getElementById('monthSessions').textContent = '0';
+            document.getElementById('totalPutts').textContent = '0';
+            document.getElementById('c1Average').textContent = '0%';
+            return;
         }
-
-        function addNewUser() {
-            const name = prompt('Enter user name:');
-            if (name && name.trim()) {
-                const trimmed = name.trim();
-                if (!users.includes(trimmed)) {
-                    users.push(trimmed);
-                    localStorage.setItem('users', JSON.stringify(users));
-                    loadUsers();
-                    document.getElementById('userSelect').value = trimmed;
-                    handleUserChange();
-                }
+        
+        // Try to get data from Airtable first if configured
+        let userLogs = [];
+        if (airtableConfig && isOnline) {
+            try {
+                const airtableData = await fetchFromAirtable();
+                userLogs = airtableData;
+            } catch (error) {
+                console.error('Failed to fetch from Airtable, using local data:', error);
+                const logs = getLocalLogs();
+                userLogs = logs.filter(log => log.User === currentUser);
             }
-        }
-
-        // Stats and Chart
-        function updateStats() {
-            if (!currentUser) {
-                document.getElementById('monthSessions').textContent = '0';
-                document.getElementById('totalPutts').textContent = '0';
-                document.getElementById('c1Average').textContent = '0%';
-                return;
-            }
-            
+        } else {
             const logs = getLocalLogs();
-            const userLogs = logs.filter(log => log.User === currentUser);
-            
-            // Sessions this month
-            const now = new Date();
-            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-            const monthSessions = new Set(
-                userLogs
-                    .filter(log => new Date(log.Date) >= monthStart)
-                    .map(log => log['Session ID'])
-            ).size;
-            
-            // Total putts
-            const totalPutts = userLogs.reduce((sum, log) => sum + log['Putts Per Set'], 0);
-            
-            // C1 Average (10-30ft)
-            const c1Logs = userLogs.filter(log => log.Distance >= 10 && log.Distance <= 30);
-            const c1Makes = c1Logs.reduce((sum, log) => sum + log.Makes, 0);
-            const c1Attempts = c1Logs.reduce((sum, log) => sum + log['Putts Per Set'], 0);
-            const c1Avg = c1Attempts > 0 ? Math.round((c1Makes / c1Attempts) * 100) : 0;
-            
-            document.getElementById('monthSessions').textContent = monthSessions;
-            document.getElementById('totalPutts').textContent = totalPutts;
-            document.getElementById('c1Average').textContent = c1Avg + '%';
+            userLogs = logs.filter(log => log.User === currentUser);
         }
+        
+        // Sessions this month
+        const now = new Date();
+        const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+        const monthSessions = new Set(
+            userLogs
+                .filter(log => new Date(log.Date) >= monthStart)
+                .map(log => log['Session ID'])
+        ).size;
+        
+        // Total putts
+        const totalPutts = userLogs.reduce((sum, log) => sum + log['Putts Per Set'], 0);
+        
+        // C1 Average (10-30ft)
+        const c1Logs = userLogs.filter(log => log.Distance >= 10 && log.Distance <= 30);
+        const c1Makes = c1Logs.reduce((sum, log) => sum + log.Makes, 0);
+        const c1Attempts = c1Logs.reduce((sum, log) => sum + log['Putts Per Set'], 0);
+        const c1Avg = c1Attempts > 0 ? Math.round((c1Makes / c1Attempts) * 100) : 0;
+        
+        document.getElementById('monthSessions').textContent = monthSessions;
+        document.getElementById('totalPutts').textContent = totalPutts;
+        document.getElementById('c1Average').textContent = c1Avg + '%';
+    }
 
-        function updateChart() {
-            const canvas = document.getElementById('chartCanvas');
-            if (!canvas) return;
-            
+    async function updateChart() {
+        const canvas = document.getElementById('chartCanvas');
+        if (!canvas) return;
+        
+        const container = canvas.parentElement;
+        const rect = container.getBoundingClientRect();
+        
+        // Show loading state if fetching from Airtable
+        if (airtableConfig && isOnline) {
             const ctx = canvas.getContext('2d');
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
-            
-            if (!currentUser) {
-                drawNoDataMessage(ctx, canvas.width, canvas.height);
-                return;
-            }
-            
-            const logs = getLocalLogs();
-            const distanceLogs = logs.filter(log => 
-                log.User === currentUser && 
-                log.Distance === selectedChartDistance
-            );
-            
-            if (distanceLogs.length === 0) {
-                drawNoDataMessage(ctx, canvas.width, canvas.height);
-                return;
-            }
-            
-            // Group by session and calculate averages
-            const sessions = {};
-            distanceLogs.forEach(log => {
-                if (!sessions[log['Session ID']]) {
-                    sessions[log['Session ID']] = {
-                        date: new Date(log.Date),
-                        makes: 0,
-                        attempts: 0
-                    };
-                }
-                sessions[log['Session ID']].makes += log.Makes;
-                sessions[log['Session ID']].attempts += log['Putts Per Set'];
-            });
-            
-            const sessionData = Object.values(sessions)
-                .sort((a, b) => a.date - b.date)
-                .slice(-10) // Last 10 sessions
-                .map(s => ({
-                    percentage: (s.makes / s.attempts) * 100
-                }));
-            
-            // Calculate average for this distance
-            const totalMakes = distanceLogs.reduce((sum, log) => sum + log.Makes, 0);
-            const totalAttempts = distanceLogs.reduce((sum, log) => sum + log['Putts Per Set'], 0);
-            const average = totalAttempts > 0 ? (totalMakes / totalAttempts) * 100 : 0;
-            
-            drawChart(ctx, canvas.width, canvas.height, sessionData, average);
-        }
-
-        function drawChart(ctx, width, height, data, average) {
-            ctx.clearRect(0, 0, width, height);
-            
-            const padding = 40;
-            const chartWidth = width - padding * 2;
-            const chartHeight = height - padding * 2;
-            
-            // Draw axes
-            ctx.strokeStyle = '#e0e0e0';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(padding, padding);
-            ctx.lineTo(padding, height - padding);
-            ctx.lineTo(width - padding, height - padding);
-            ctx.stroke();
-            
-            // Draw Y labels
-            ctx.fillStyle = '#757575';
-            ctx.font = '10px sans-serif';
-            ctx.textAlign = 'right';
-            ctx.fillText('100%', padding - 5, padding);
-            ctx.fillText('50%', padding - 5, padding + chartHeight / 2);
-            ctx.fillText('0%', padding - 5, height - padding);
-            
-            if (data.length === 0) return;
-            
-            // Draw average line
-            const avgY = height - padding - (average / 100) * chartHeight;
-            ctx.strokeStyle = '#1a237e';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([5, 5]);
-            ctx.beginPath();
-            ctx.moveTo(padding, avgY);
-            ctx.lineTo(width - padding, avgY);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            
-            ctx.fillStyle = '#1a237e';
-            ctx.font = '11px sans-serif';
-            ctx.textAlign = 'left';
-            ctx.fillText(`${Math.round(average)}% avg`, width - padding + 5, avgY);
-            
-            // Draw data line
-            ctx.strokeStyle = '#ff5722';
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
-            
-            data.forEach((point, index) => {
-                const x = padding + (index / (data.length - 1)) * chartWidth;
-                const y = height - padding - (point.percentage / 100) * chartHeight;
-                
-                if (index === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
-            });
-            
-            ctx.stroke();
-            
-            // Draw points
-            data.forEach((point, index) => {
-                const x = padding + (index / (data.length - 1)) * chartWidth;
-                const y = height - padding - (point.percentage / 100) * chartHeight;
-                
-                ctx.fillStyle = '#ff5722';
-                ctx.strokeStyle = 'white';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(x, y, 4, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-            });
-        }
-
-        function drawNoDataMessage(ctx, width, height) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#9e9e9e';
             ctx.font = 'italic 14px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('No data for this distance', width / 2, height / 2);
+            ctx.fillText('Loading from Airtable...', rect.width / 2, rect.height / 2);
         }
-
-        function selectChartDistance(distance) {
-            selectedChartDistance = distance;
-            document.querySelectorAll('.distance-btn').forEach(btn => {
-                btn.classList.toggle('active', parseInt(btn.dataset.distance) === distance);
-            });
-            updateChart();
+        
+        // Make canvas fill container better
+        canvas.width = rect.width * window.devicePixelRatio;
+        canvas.height = rect.height * window.devicePixelRatio;
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+        
+        const ctx = canvas.getContext('2d');
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        
+        if (!currentUser) {
+            drawNoDataMessage(ctx, rect.width, rect.height);
+            return;
         }
-
-        // Recent Sessions
-        function loadRecentSessions() {
-            const container = document.getElementById('sessionsList');
-            
-            if (!currentUser) {
-                container.innerHTML = '<div class="no-data">Please select a user</div>';
-                return;
+        
+        // Try to get data from Airtable first
+        let distanceLogs = [];
+        if (airtableConfig && isOnline) {
+            try {
+                const airtableData = await fetchFromAirtable();
+                distanceLogs = airtableData.filter(log => log.Distance === selectedChartDistance);
+            } catch (error) {
+                console.error('Failed to fetch from Airtable, using local data:', error);
+                const logs = getLocalLogs();
+                distanceLogs = logs.filter(log => 
+                    log.User === currentUser && 
+                    log.Distance === selectedChartDistance
+                );
             }
-            
+        } else {
             const logs = getLocalLogs();
-            const userLogs = logs.filter(log => log.User === currentUser);
-            
-            if (userLogs.length === 0) {
-                container.innerHTML = '<div class="no-data">No sessions yet</div>';
-                return;
+            distanceLogs = logs.filter(log => 
+                log.User === currentUser && 
+                log.Distance === selectedChartDistance
+            );
+        }
+        
+        if (distanceLogs.length === 0) {
+            drawNoDataMessage(ctx, rect.width, rect.height);
+            return;
+        }
+        
+        // Group by session and calculate averages
+        const sessions = {};
+        distanceLogs.forEach(log => {
+            if (!sessions[log['Session ID']]) {
+                sessions[log['Session ID']] = {
+                    date: new Date(log.Date),
+                    makes: 0,
+                    attempts: 0
+                };
             }
-            
-            // Group by session
-            const sessions = {};
-            userLogs.forEach(log => {
-                const sessionId = log['Session ID'];
-                if (!sessions[sessionId]) {
-                    sessions[sessionId] = {
-                        id: sessionId,
-                        date: log.Date,
-                        sets: []
-                    };
-                }
-                sessions[sessionId].sets.push({
-                    distance: log.Distance,
-                    makes: log.Makes,
-                    attempts: log['Putts Per Set'],
-                    percentage: Math.round((log.Makes / log['Putts Per Set']) * 100)
-                });
-            });
-            
-            // Sort sessions by date
-            const sortedSessions = Object.values(sessions)
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .slice(0, 10);
-            
-            container.innerHTML = sortedSessions.map(session => {
-                // Calculate session summary
-                const distanceSummary = {};
-                session.sets.forEach(set => {
-                    if (!distanceSummary[set.distance]) {
-                        distanceSummary[set.distance] = { makes: 0, attempts: 0, count: 0 };
-                    }
-                    distanceSummary[set.distance].makes += set.makes;
-                    distanceSummary[set.distance].attempts += set.attempts;
-                    distanceSummary[set.distance].count++;
-                });
-                
-                const summary = Object.entries(distanceSummary)
-                    .map(([dist, data]) => {
-                        const percentage = Math.round((data.makes / data.attempts) * 100);
-                        return `${dist}ft: ${percentage}% | ${data.count} sets | ${data.attempts} putts`;
-                    })
-                    .join(' | ');
-                
-                return `
-                    <div class="session-item" data-session-id="${session.id}">
-                        <div class="session-header" onclick="toggleSessionExpand('${session.id}')">
-                            <div class="session-info">
-                                <div class="session-date">${session.date}</div>
-                                <div class="session-details">${summary}</div>
-                            </div>
-                            <span class="expand-icon">▼</span>
-                        </div>
-                        <div class="session-sets">
-                            ${session.sets.map((set, index) => `
-                                <div class="set-item">
-                                    <span class="set-number">Set ${index + 1} (${set.distance}ft)</span>
-                                    <span class="set-result">${set.makes}/${set.attempts} (${set.percentage}%)</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+            sessions[log['Session ID']].makes += log.Makes;
+            sessions[log['Session ID']].attempts += log['Putts Per Set'];
+        });
+        
+        const sessionData = Object.values(sessions)
+            .sort((a, b) => a.date - b.date)
+            .slice(-10) // Last 10 sessions
+            .map(s => ({
+                percentage: (s.makes / s.attempts) * 100
+            }));
+        
+        // Calculate average for this distance
+        const totalMakes = distanceLogs.reduce((sum, log) => sum + log.Makes, 0);
+        const totalAttempts = distanceLogs.reduce((sum, log) => sum + log['Putts Per Set'], 0);
+        const average = totalAttempts > 0 ? (totalMakes / totalAttempts) * 100 : 0;
+        
+        drawChart(ctx, rect.width, rect.height, sessionData, average);
+    }
 
-        function toggleSessionExpand(sessionId) {
-            const item = document.querySelector(`[data-session-id="${sessionId}"]`);
-            if (item) {
-                item.classList.toggle('expanded');
-            }
+    function drawChart(ctx, width, height, data, average) {
+        ctx.clearRect(0, 0, width, height);
+        
+        // Adjusted padding for better use of space
+        const padding = { top: 20, right: 55, bottom: 30, left: 35 };
+        const chartWidth = width - padding.left - padding.right;
+        const chartHeight = height - padding.top - padding.bottom;
+        
+        // Draw axes
+        ctx.strokeStyle = '#e0e0e0';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, padding.top);
+        ctx.lineTo(padding.left, height - padding.bottom);
+        ctx.lineTo(width - padding.right, height - padding.bottom);
+        ctx.stroke();
+        
+        // Draw Y labels
+        ctx.fillStyle = '#757575';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('100%', padding.left - 5, padding.top);
+        ctx.fillText('50%', padding.left - 5, padding.top + chartHeight / 2);
+        ctx.fillText('0%', padding.left - 5, height - padding.bottom);
+        
+        // Draw grid lines
+        ctx.strokeStyle = '#f0f0f0';
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i <= 4; i++) {
+            const y = padding.top + (chartHeight / 4) * i;
+            ctx.beginPath();
+            ctx.moveTo(padding.left, y);
+            ctx.lineTo(width - padding.right, y);
+            ctx.stroke();
         }
-
-        // Active Session
-        function startPutting() {
-            if (!currentUser) {
-                alert('Please select a user first');
-                return;
-            }
+        
+        if (data.length === 0) return;
+        
+        // Draw average line
+        const avgY = height - padding.bottom - (average / 100) * chartHeight;
+        ctx.strokeStyle = '#1a237e';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(padding.left, avgY);
+        ctx.lineTo(width - padding.right, avgY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        ctx.fillStyle = '#1a237e';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(`${Math.round(average)}% avg`, width - padding.right + 5, avgY);
+        
+        // Draw data line
+        ctx.strokeStyle = '#ff5722';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        
+        data.forEach((point, index) => {
+            const x = padding.left + (index / Math.max(data.length - 1, 1)) * chartWidth;
+            const y = height - padding.bottom - (point.percentage / 100) * chartHeight;
             
-            const btn = document.getElementById('startPuttingBtn');
-            btn.classList.add('loading');
-            
-            setTimeout(() => {
-                btn.classList.remove('loading');
-                
-                if (activeSession) {
-                    showModal('resumeModal');
-                } else {
-                    createNewSession();
-                }
-            }, 600);
-        }
-
-        function createNewSession() {
-            activeSession = {
-                id: generateSessionId(),
-                user: currentUser,
-                startTime: new Date().toISOString(),
-                sets: [],
-                currentDistance: 15,
-                currentPutts: 5
-            };
-            
-            currentDistance = 15;
-            currentPutts = 5;
-            selectedMakes = null;
-            
-            updateSessionUI();
-            saveActiveSession();
-            showPage('session');
-        }
-
-        function resumeSession() {
-            currentDistance = activeSession.currentDistance || 15;
-            currentPutts = activeSession.currentPutts || 5;
-            selectedMakes = null;
-            
-            updateSessionUI();
-            hideModal('resumeModal');
-            showPage('session');
-        }
-
-        function discardSession() {
-            activeSession = null;
-            localStorage.removeItem('activeSession');
-            hideModal('resumeModal');
-            createNewSession();
-        }
-
-        function updateSessionUI() {
-            document.getElementById('distanceValue').textContent = `${currentDistance} ft`;
-            document.getElementById('puttsValue').textContent = `${currentPutts} putts`;
-            updateButtonGrid();
-            updateSessionStats();
-            updateRecentSets();
-        }
-
-        function adjustDistance(change) {
-            currentDistance = Math.max(10, Math.min(30, currentDistance + change));
-            document.getElementById('distanceValue').textContent = `${currentDistance} ft`;
-            
-            if (activeSession) {
-                activeSession.currentDistance = currentDistance;
-                saveActiveSession();
-            }
-        }
-
-        function adjustPutts(change) {
-            currentPutts = Math.max(1, Math.min(10, currentPutts + change));
-            document.getElementById('puttsValue').textContent = `${currentPutts} putts`;
-            updateButtonGrid();
-            
-            if (activeSession) {
-                activeSession.currentPutts = currentPutts;
-                saveActiveSession();
-            }
-        }
-
-        function updateButtonGrid() {
-            const grid = document.getElementById('buttonGrid');
-            grid.innerHTML = '';
-            
-            for (let i = 0; i <= Math.min(currentPutts, 10); i++) {
-                const btn = document.createElement('button');
-                btn.className = 'number-btn';
-                btn.textContent = i;
-                btn.addEventListener('click', () => selectNumber(i));
-                grid.appendChild(btn);
-            }
-        }
-
-        function selectNumber(num) {
-            document.querySelectorAll('.number-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            
-            const buttons = document.querySelectorAll('.number-btn');
-            buttons[num].classList.add('selected');
-            selectedMakes = num;
-        }
-
-        function logSet() {
-            if (selectedMakes === null || !activeSession) return;
-            
-            const btn = document.getElementById('logSetBtn');
-            btn.classList.add('loading');
-            btn.disabled = true;
-            
-            const setData = {
-                setNumber: activeSession.sets.length + 1,
-                distance: currentDistance,
-                putts: currentPutts,
-                makes: selectedMakes,
-                percentage: Math.round((selectedMakes / currentPutts) * 100),
-                timestamp: new Date().toISOString()
-            };
-            
-            activeSession.sets.push(setData);
-            saveActiveSession();
-            
-            // Save to storage
-            const logEntry = {
-                'Session ID': activeSession.id,
-                'User': currentUser,
-                'Distance': currentDistance,
-                'Putts Per Set': currentPutts,
-                'Makes': selectedMakes,
-                'Date': new Date().toLocaleString('en-US'),
-                'Status': 'Completed',
-                'Make Percentage': setData.percentage
-            };
-            
-            saveLog(logEntry, btn);
-        }
-
-        function saveLog(entry, btn) {
-            // Always save locally first
-            const logs = getLocalLogs();
-            logs.push(entry);
-            localStorage.setItem('puttingLogs', JSON.stringify(logs));
-            
-            // Try to save to Airtable if configured and online
-            if (airtableConfig && isOnline) {
-                saveToAirtable(entry)
-                    .then(() => {
-                        btn.classList.remove('loading');
-                        btn.classList.add('success');
-                        setTimeout(() => {
-                            btn.classList.remove('success');
-                            btn.textContent = 'Log Set';
-                            btn.disabled = false;
-                        }, 1500);
-                    })
-                    .catch(() => {
-                        showOfflineButton(btn);
-                    });
+            if (index === 0) {
+                ctx.moveTo(x, y);
             } else {
-                showOfflineButton(btn);
+                ctx.lineTo(x, y);
             }
+        });
+        
+        ctx.stroke();
+        
+        // Draw points
+        data.forEach((point, index) => {
+            const x = padding.left + (index / Math.max(data.length - 1, 1)) * chartWidth;
+            const y = height - padding.bottom - (point.percentage / 100) * chartHeight;
             
-            // Update UI
-            updateSessionStats();
-            updateRecentSets();
-            
-            // Clear selection
-            document.querySelectorAll('.number-btn').forEach(b => b.classList.remove('selected'));
-            selectedMakes = null;
-        }
+            ctx.fillStyle = '#ff5722';
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+        });
+    }
 
-        function showOfflineButton(btn) {
-            btn.classList.remove('loading');
-            btn.classList.add('offline');
-            btn.textContent = 'Saved Offline';
-            
-            setTimeout(() => {
-                btn.classList.remove('offline');
-                btn.textContent = 'Log Set';
-                btn.disabled = false;
-            }, 2000);
+    async function fetchFromAirtable() {
+        if (!airtableConfig || !currentUser) return [];
+        
+        const url = `https://api.airtable.com/v0/${airtableConfig.baseId}/${airtableConfig.tableName}?filterByFormula={User}="${currentUser}"`;
+        
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${airtableConfig.token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch from Airtable');
         }
+        
+        const data = await response.json();
+        return data.records.map(record => ({
+            'Session ID': record.fields['Session ID'],
+            'User': record.fields.User,
+            'Distance': record.fields.Distance,
+            'Putts Per Set': record.fields['Putts Per Set'],
+            'Makes': record.fields.Makes,
+            'Date': record.fields.Date,
+            'Status': record.fields.Status,
+            'Make Percentage': record.fields['Make Percentage']
+        }));
+    }
 
-        async function saveToAirtable(record) {
-            if (!airtableConfig) throw new Error('Airtable not configured');
+    function drawNoDataMessage(ctx, width, height) {
+        ctx.fillStyle = '#9e9e9e';
+        ctx.font = 'italic 14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('No data for this distance', width / 2, height / 2);
+    }
+
+    function selectChartDistance(distance) {
+        selectedChartDistance = distance;
+        document.querySelectorAll('.distance-btn').forEach(btn => {
+            btn.classList.toggle('active', parseInt(btn.dataset.distance) === distance);
+        });
+        updateChart();
+    }
+
+    // Recent Sessions
+    async function loadRecentSessions() {
+        const container = document.getElementById('sessionsList');
+        
+        if (!currentUser) {
+            container.innerHTML = '<div class="no-data">Please select a user</div>';
+            return;
+        }
+        
+        // Try to get data from Airtable first if configured
+        let userLogs = [];
+        if (airtableConfig && isOnline) {
+            try {
+                const airtableData = await fetchFromAirtable();
+                userLogs = airtableData;
+            } catch (error) {
+                console.error('Failed to fetch from Airtable, using local data:', error);
+                const logs = getLocalLogs();
+                userLogs = logs.filter(log => log.User === currentUser);
+            }
+        } else {
+            const logs = getLocalLogs();
+            userLogs = logs.filter(log => log.User === currentUser);
+        }
+        
+        if (userLogs.length === 0) {
+            container.innerHTML = '<div class="no-data">No sessions yet</div>';
+            return;
+        }
+        
+        // Group by session
+        const sessions = {};
+        userLogs.forEach(log => {
+            const sessionId = log['Session ID'];
+            if (!sessions[sessionId]) {
+                sessions[sessionId] = {
+                    id: sessionId,
+                    date: log.Date,
+                    sets: []
+                };
+            }
+            sessions[sessionId].sets.push({
+                distance: log.Distance,
+                makes: log.Makes,
+                attempts: log['Putts Per Set'],
+                percentage: Math.round((log.Makes / log['Putts Per Set']) * 100)
+            });
+        });
+        
+        // Sort sessions by date
+        const sortedSessions = Object.values(sessions)
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .slice(0, 10);
+        
+        container.innerHTML = sortedSessions.map(session => {
+            // Calculate session summary
+            const distanceSummary = {};
+            session.sets.forEach(set => {
+                if (!distanceSummary[set.distance]) {
+                    distanceSummary[set.distance] = { makes: 0, attempts: 0, count: 0 };
+                }
+                distanceSummary[set.distance].makes += set.makes;
+                distanceSummary[set.distance].attempts += set.attempts;
+                distanceSummary[set.distance].count++;
+            });
             
-            const url = `https://api.airtable.com/v0/${airtableConfig.baseId}/${airtableConfig.tableName}`;
-            
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${airtableConfig.token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    records: [{
-                        fields: record
-                    }]
+            const summary = Object.entries(distanceSummary)
+                .map(([dist, data]) => {
+                    const percentage = Math.round((data.makes / data.attempts) * 100);
+                    return `${dist}ft: ${percentage}% | ${data.count} sets | ${data.attempts} putts`;
                 })
-            });
+                .join(' | ');
             
-            if (!response.ok) {
-                throw new Error('Failed to save to Airtable');
-            }
-            
-            return response.json();
-        }
-
-        function updateSessionStats() {
-            if (!activeSession) return;
-            
-            const totalMakes = activeSession.sets.reduce((sum, set) => sum + set.makes, 0);
-            const totalAttempts = activeSession.sets.reduce((sum, set) => sum + set.putts, 0);
-            const average = totalAttempts > 0 ? Math.round((totalMakes / totalAttempts) * 100) : 0;
-            
-            document.getElementById('sessionAvg').textContent = average + '%';
-            document.getElementById('totalMakes').textContent = totalMakes;
-            document.getElementById('totalAttempts').textContent = totalAttempts;
-            document.getElementById('setsCount').textContent = activeSession.sets.length;
-        }
-
-        function updateRecentSets() {
-            if (!activeSession || activeSession.sets.length === 0) {
-                document.getElementById('recentSetsList').innerHTML = '<div class="no-sets">No sets logged yet</div>';
-                return;
-            }
-            
-            const recentThree = activeSession.sets.slice(-3).reverse();
-            document.getElementById('recentSetsList').innerHTML = recentThree.map(set => `
-                <div class="recent-set-item">
-                    <span class="set-info">Set ${set.setNumber} • ${set.distance}ft</span>
-                    <span class="set-performance">${set.makes}/${set.putts} (${set.percentage}%)</span>
-                </div>
-            `).join('');
-        }
-
-        function showSessionStats() {
-            if (!activeSession) return;
-            
-            const distanceStats = {};
-            activeSession.sets.forEach(set => {
-                if (!distanceStats[set.distance]) {
-                    distanceStats[set.distance] = { makes: 0, attempts: 0, count: 0 };
-                }
-                distanceStats[set.distance].makes += set.makes;
-                distanceStats[set.distance].attempts += set.putts;
-                distanceStats[set.distance].count++;
-            });
-            
-            const totalMakes = activeSession.sets.reduce((sum, set) => sum + set.makes, 0);
-            const totalAttempts = activeSession.sets.reduce((sum, set) => sum + set.putts, 0);
-            const sessionAverage = totalAttempts > 0 ? Math.round((totalMakes / totalAttempts) * 100) : 0;
-            
-            let bestSet = null;
-            activeSession.sets.forEach(set => {
-                if (!bestSet || set.percentage > bestSet.percentage) {
-                    bestSet = set;
-                }
-            });
-            
-            const statsHTML = `
-                <div class="stat-group">
-                    <div class="stat-group-title">Current Session</div>
-                    <div class="stat-detail">
-                        <span class="stat-detail-label">Total Sets</span>
-                        <span class="stat-detail-value">${activeSession.sets.length}</span>
-                    </div>
-                    <div class="stat-detail">
-                        <span class="stat-detail-label">Session Average</span>
-                        <span class="stat-detail-value">${sessionAverage}%</span>
-                    </div>
-                    ${bestSet ? `
-                    <div class="stat-detail">
-                        <span class="stat-detail-label">Best Set</span>
-                        <span class="stat-detail-value">${bestSet.makes}/${bestSet.putts} (${bestSet.percentage}%)</span>
-                    </div>
-                    ` : ''}
-                </div>
-                ${Object.keys(distanceStats).length > 0 ? `
-                <div class="stat-group">
-                    <div class="stat-group-title">By Distance</div>
-                    ${Object.entries(distanceStats).map(([dist, stats]) => {
-                        const percentage = Math.round((stats.makes / stats.attempts) * 100);
-                        return `
-                        <div class="stat-detail">
-                            <span class="stat-detail-label">${dist}ft</span>
-                            <span class="stat-detail-value">${stats.makes}/${stats.attempts} (${percentage}%)</span>
+            return `
+                <div class="session-item" data-session-id="${session.id}">
+                    <div class="session-header" onclick="toggleSessionExpand('${session.id}')">
+                        <div class="session-info">
+                            <div class="session-date">${session.date}</div>
+                            <div class="session-details">${summary}</div>
                         </div>
-                        `;
-                    }).join('')}
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="session-sets">
+                        ${session.sets.map((set, index) => `
+                            <div class="set-item">
+                                <span class="set-number">Set ${index + 1} (${set.distance}ft)</span>
+                                <span class="set-result">${set.makes}/${set.attempts} (${set.percentage}%)</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function toggleSessionExpand(sessionId) {
+        const item = document.querySelector(`[data-session-id="${sessionId}"]`);
+        if (item) {
+            item.classList.toggle('expanded');
+        }
+    }
+
+    // Active Session
+    function startPutting() {
+        if (!currentUser) {
+            alert('Please select a user first');
+            return;
+        }
+        
+        const btn = document.getElementById('startPuttingBtn');
+        btn.classList.add('loading');
+        
+        setTimeout(() => {
+            btn.classList.remove('loading');
+            
+            if (activeSession) {
+                showModal('resumeModal');
+            } else {
+                createNewSession();
+            }
+        }, 600);
+    }
+
+    function createNewSession() {
+        activeSession = {
+            id: generateSessionId(),
+            user: currentUser,
+            startTime: new Date().toISOString(),
+            sets: [],
+            currentDistance: 15,
+            currentPutts: 5
+        };
+        
+        currentDistance = 15;
+        currentPutts = 5;
+        selectedMakes = null;
+        
+        updateSessionUI();
+        saveActiveSession();
+        showPage('session');
+    }
+
+    function resumeSession() {
+        currentDistance = activeSession.currentDistance || 15;
+        currentPutts = activeSession.currentPutts || 5;
+        selectedMakes = null;
+        
+        updateSessionUI();
+        hideModal('resumeModal');
+        showPage('session');
+    }
+
+    function discardSession() {
+        activeSession = null;
+        localStorage.removeItem('activeSession');
+        hideModal('resumeModal');
+        createNewSession();
+    }
+
+    function updateSessionUI() {
+        document.getElementById('distanceValue').textContent = `${currentDistance} ft`;
+        document.getElementById('puttsValue').textContent = `${currentPutts} putts`;
+        updateButtonGrid();
+        updateSessionStats();
+        updateRecentSets();
+    }
+
+    function adjustDistance(change) {
+        currentDistance = Math.max(10, Math.min(30, currentDistance + change));
+        document.getElementById('distanceValue').textContent = `${currentDistance} ft`;
+        
+        if (activeSession) {
+            activeSession.currentDistance = currentDistance;
+            saveActiveSession();
+        }
+    }
+
+    function adjustPutts(change) {
+        currentPutts = Math.max(1, Math.min(10, currentPutts + change));
+        document.getElementById('puttsValue').textContent = `${currentPutts} putts`;
+        updateButtonGrid();
+        
+        if (activeSession) {
+            activeSession.currentPutts = currentPutts;
+            saveActiveSession();
+        }
+    }
+
+    function updateButtonGrid() {
+        const grid = document.getElementById('buttonGrid');
+        grid.innerHTML = '';
+        
+        for (let i = 0; i <= Math.min(currentPutts, 10); i++) {
+            const btn = document.createElement('button');
+            btn.className = 'number-btn';
+            btn.textContent = i;
+            btn.addEventListener('click', () => selectNumber(i));
+            grid.appendChild(btn);
+        }
+    }
+
+    function selectNumber(num) {
+        document.querySelectorAll('.number-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        const buttons = document.querySelectorAll('.number-btn');
+        buttons[num].classList.add('selected');
+        selectedMakes = num;
+    }
+
+    function logSet() {
+        if (selectedMakes === null || !activeSession) return;
+        
+        const btn = document.getElementById('logSetBtn');
+        btn.classList.add('loading');
+        btn.disabled = true;
+        
+        const setData = {
+            setNumber: activeSession.sets.length + 1,
+            distance: currentDistance,
+            putts: currentPutts,
+            makes: selectedMakes,
+            percentage: Math.round((selectedMakes / currentPutts) * 100),
+            timestamp: new Date().toISOString()
+        };
+        
+        activeSession.sets.push(setData);
+        saveActiveSession();
+        
+        // Save to storage
+        const logEntry = {
+            'Session ID': activeSession.id,
+            'User': currentUser,
+            'Distance': currentDistance,
+            'Putts Per Set': currentPutts,
+            'Makes': selectedMakes,
+            'Date': new Date().toLocaleString('en-US'),
+            'Status': 'Completed',
+            'Make Percentage': setData.percentage
+        };
+        
+        saveLog(logEntry, btn);
+    }
+
+    function saveLog(entry, btn) {
+        // Always save locally first
+        const logs = getLocalLogs();
+        logs.push(entry);
+        localStorage.setItem('puttingLogs', JSON.stringify(logs));
+        
+        // Try to save to Airtable if configured and online
+        if (airtableConfig && isOnline) {
+            saveToAirtable(entry)
+                .then(() => {
+                    btn.classList.remove('loading');
+                    btn.classList.add('success');
+                    setTimeout(() => {
+                        btn.classList.remove('success');
+                        btn.textContent = 'Log Set';
+                        btn.disabled = false;
+                    }, 1500);
+                })
+                .catch(() => {
+                    showOfflineButton(btn);
+                });
+        } else {
+            showOfflineButton(btn);
+        }
+        
+        // Update UI
+        updateSessionStats();
+        updateRecentSets();
+        
+        // Clear selection
+        document.querySelectorAll('.number-btn').forEach(b => b.classList.remove('selected'));
+        selectedMakes = null;
+    }
+
+    function showOfflineButton(btn) {
+        btn.classList.remove('loading');
+        btn.classList.add('offline');
+        btn.textContent = 'Saved Offline';
+        
+        setTimeout(() => {
+            btn.classList.remove('offline');
+            btn.textContent = 'Log Set';
+            btn.disabled = false;
+        }, 2000);
+    }
+
+    async function saveToAirtable(record) {
+        if (!airtableConfig) throw new Error('Airtable not configured');
+        
+        const url = `https://api.airtable.com/v0/${airtableConfig.baseId}/${airtableConfig.tableName}`;
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${airtableConfig.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                records: [{
+                    fields: record
+                }]
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to save to Airtable');
+        }
+        
+        return response.json();
+    }
+
+    function updateSessionStats() {
+        if (!activeSession) return;
+        
+        const totalMakes = activeSession.sets.reduce((sum, set) => sum + set.makes, 0);
+        const totalAttempts = activeSession.sets.reduce((sum, set) => sum + set.putts, 0);
+        const average = totalAttempts > 0 ? Math.round((totalMakes / totalAttempts) * 100) : 0;
+        
+        document.getElementById('sessionAvg').textContent = average + '%';
+        document.getElementById('totalMakes').textContent = totalMakes;
+        document.getElementById('totalAttempts').textContent = totalAttempts;
+        document.getElementById('setsCount').textContent = activeSession.sets.length;
+    }
+
+    function updateRecentSets() {
+        if (!activeSession || activeSession.sets.length === 0) {
+            document.getElementById('recentSetsList').innerHTML = '<div class="no-sets">No sets logged yet</div>';
+            return;
+        }
+        
+        const recentThree = activeSession.sets.slice(-3).reverse();
+        document.getElementById('recentSetsList').innerHTML = recentThree.map(set => `
+            <div class="recent-set-item">
+                <span class="set-info">Set ${set.setNumber} • ${set.distance}ft</span>
+                <span class="set-performance">${set.makes}/${set.putts} (${set.percentage}%)</span>
+            </div>
+        `).join('');
+    }
+
+    function showSessionStats() {
+        if (!activeSession) return;
+        
+        const distanceStats = {};
+        activeSession.sets.forEach(set => {
+            if (!distanceStats[set.distance]) {
+                distanceStats[set.distance] = { makes: 0, attempts: 0, count: 0 };
+            }
+            distanceStats[set.distance].makes += set.makes;
+            distanceStats[set.distance].attempts += set.putts;
+            distanceStats[set.distance].count++;
+        });
+        
+        const totalMakes = activeSession.sets.reduce((sum, set) => sum + set.makes, 0);
+        const totalAttempts = activeSession.sets.reduce((sum, set) => sum + set.putts, 0);
+        const sessionAverage = totalAttempts > 0 ? Math.round((totalMakes / totalAttempts) * 100) : 0;
+        
+        let bestSet = null;
+        activeSession.sets.forEach(set => {
+            if (!bestSet || set.percentage > bestSet.percentage) {
+                bestSet = set;
+            }
+        });
+        
+        const statsHTML = `
+            <div class="stat-group">
+                <div class="stat-group-title">Current Session</div>
+                <div class="stat-detail">
+                    <span class="stat-detail-label">Total Sets</span>
+                    <span class="stat-detail-value">${activeSession.sets.length}</span>
+                </div>
+                <div class="stat-detail">
+                    <span class="stat-detail-label">Session Average</span>
+                    <span class="stat-detail-value">${sessionAverage}%</span>
+                </div>
+                ${bestSet ? `
+                <div class="stat-detail">
+                    <span class="stat-detail-label">Best Set</span>
+                    <span class="stat-detail-value">${bestSet.makes}/${bestSet.putts} (${bestSet.percentage}%)</span>
                 </div>
                 ` : ''}
-            `;
+            </div>
+            ${Object.keys(distanceStats).length > 0 ? `
+            <div class="stat-group">
+                <div class="stat-group-title">By Distance</div>
+                ${Object.entries(distanceStats).map(([dist, stats]) => {
+                    const percentage = Math.round((stats.makes / stats.attempts) * 100);
+                    return `
+                    <div class="stat-detail">
+                        <span class="stat-detail-label">${dist}ft</span>
+                        <span class="stat-detail-value">${stats.makes}/${stats.attempts} (${percentage}%)</span>
+                    </div>
+                    `;
+                }).join('')}
+            </div>
+            ` : ''}
+        `;
+        
+        document.getElementById('detailedStats').innerHTML = statsHTML;
+        showModal('statsModal');
+    }
+
+    function showEndSessionConfirm() {
+        showConfirmModal(
+            'End Session?',
+            'Are you sure you want to end this session?',
+            () => endSession()
+        );
+    }
+
+    function endSession() {
+        activeSession = null;
+        localStorage.removeItem('activeSession');
+        hideModal();
+        showPage('landing');
+    }
+
+    // Settings
+    function saveAirtableConfig() {
+        const token = document.getElementById('airtableToken').value.trim();
+        const baseId = document.getElementById('airtableBaseId').value.trim();
+        const tableName = document.getElementById('airtableTableName').value.trim();
+        
+        if (token && baseId && tableName) {
+            airtableConfig = { token, baseId, tableName };
+            localStorage.setItem('airtableConfig', JSON.stringify(airtableConfig));
+            updateSyncIndicator(true);
+            alert('Airtable configuration saved!');
+        } else {
+            airtableConfig = null;
+            localStorage.removeItem('airtableConfig');
+            updateSyncIndicator(false);
+        }
+    }
+
+    function updateSyncIndicator(configured) {
+        const indicator = document.getElementById('syncIndicator');
+        const settingsBtn = document.getElementById('settingsBtn');
+        
+        if (configured) {
+            indicator.className = 'sync-indicator';
+            indicator.innerHTML = '<span>✓</span><span>Configured - syncing to Airtable</span>';
             
-            document.getElementById('detailedStats').innerHTML = statsHTML;
-            showModal('statsModal');
-        }
-
-        function showEndSessionConfirm() {
-            showConfirmModal(
-                'End Session?',
-                'Are you sure you want to end this session?',
-                () => endSession()
-            );
-        }
-
-        function endSession() {
-            activeSession = null;
-            localStorage.removeItem('activeSession');
-            hideModal();
-            showPage('landing');
-        }
-
-        // Settings
-        function saveAirtableConfig() {
-            const token = document.getElementById('airtableToken').value.trim();
-            const baseId = document.getElementById('airtableBaseId').value.trim();
-            const tableName = document.getElementById('airtableTableName').value.trim();
+            // Update header icon to show sync status
+            settingsBtn.innerHTML = `<div class="sync-status ${isOnline ? 'online' : 'offline'}">●</div>`;
+        } else {
+            indicator.className = 'sync-indicator not-configured';
+            indicator.innerHTML = '<span>⚠️</span><span>Not configured - data saving locally only</span>';
             
-            if (token && baseId && tableName) {
-                airtableConfig = { token, baseId, tableName };
-                localStorage.setItem('airtableConfig', JSON.stringify(airtableConfig));
-                updateSyncIndicator(true);
-                alert('Airtable configuration saved!');
-            } else {
-                airtableConfig = null;
-                localStorage.removeItem('airtableConfig');
-                updateSyncIndicator(false);
+            // Show settings icon
+            settingsBtn.innerHTML = '<span class="settings-icon">⚙️</span>';
+        }
+    }
+
+    function exportData() {
+        const logs = getLocalLogs();
+        const dataStr = JSON.stringify(logs, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = `putting-data-${new Date().toISOString().split('T')[0]}.json`;
+        link.click();
+    }
+
+    function showClearDataConfirm() {
+        showConfirmModal(
+            'Clear All Data?',
+            'This will delete all local data. This cannot be undone!',
+            () => {
+                localStorage.clear();
+                location.reload();
             }
-        }
+        );
+    }
 
-        function updateSyncIndicator(configured) {
-            const indicator = document.getElementById('syncIndicator');
-            if (configured) {
-                indicator.className = 'sync-indicator';
-                indicator.innerHTML = '<span>✓</span><span>Configured - syncing to Airtable</span>';
-            } else {
-                indicator.className = 'sync-indicator not-configured';
-                indicator.innerHTML = '<span>⚠️</span><span>Not configured - data saving locally only</span>';
-            }
-        }
+    // Utilities
+    function generateSessionId() {
+        const now = new Date();
+        const dateStr = now.toISOString().split('T')[0];
+        const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '');
+        return `${currentUser}_${dateStr}_${timeStr}`;
+    }
 
-        function exportData() {
-            const logs = getLocalLogs();
-            const dataStr = JSON.stringify(logs, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = `putting-data-${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-        }
+    function getLocalLogs() {
+        return JSON.parse(localStorage.getItem('puttingLogs') || '[]');
+    }
 
-        function showClearDataConfirm() {
-            showConfirmModal(
-                'Clear All Data?',
-                'This will delete all local data. This cannot be undone!',
-                () => {
-                    localStorage.clear();
-                    location.reload();
-                }
-            );
+    function saveActiveSession() {
+        if (activeSession) {
+            localStorage.setItem('activeSession', JSON.stringify(activeSession));
         }
+    }
 
-        // Utilities
-        function generateSessionId() {
-            const now = new Date();
-            const dateStr = now.toISOString().split('T')[0];
-            const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '');
-            return `${currentUser}_${dateStr}_${timeStr}`;
+    function checkForActiveSession() {
+        if (activeSession && currentPage === 'landing') {
+            // Don't show modal on initial load, just have session ready
         }
+    }
 
-        function getLocalLogs() {
-            return JSON.parse(localStorage.getItem('puttingLogs') || '[]');
+    function updateOnlineStatus() {
+        isOnline = navigator.onLine;
+        const syncStatus = document.getElementById('sessionSyncStatus');
+        if (syncStatus) {
+            syncStatus.className = `sync-status ${isOnline ? 'online' : 'offline'}`;
+            syncStatus.title = isOnline ? 'Online' : 'Offline';
         }
+        
+        // Update landing page header icon if Airtable is configured
+        if (airtableConfig && currentPage === 'landing') {
+            const settingsBtn = document.getElementById('settingsBtn');
+            settingsBtn.innerHTML = `<div class="sync-status ${isOnline ? 'online' : 'offline'}">●</div>`;
+        }
+    }
 
-        function saveActiveSession() {
-            if (activeSession) {
-                localStorage.setItem('activeSession', JSON.stringify(activeSession));
-            }
-        }
+    // Modal Management
+    function showModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
 
-        function checkForActiveSession() {
-            if (activeSession && currentPage === 'landing') {
-                // Don't show modal on initial load, just have session ready
-            }
+    function hideModal(modalId) {
+        const modal = modalId ? document.getElementById(modalId) : document.querySelector('.modal-overlay:not(.hidden)');
+        if (modal) {
+            modal.style.display = 'none';
         }
+    }
 
-        function updateOnlineStatus() {
-            isOnline = navigator.onLine;
-            const syncStatus = document.getElementById('sessionSyncStatus');
-            if (syncStatus) {
-                syncStatus.className = `sync-status ${isOnline ? 'online' : 'offline'}`;
-                syncStatus.title = isOnline ? 'Online' : 'Offline';
-            }
-        }
+    function showConfirmModal(title, text, onConfirm) {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalText').textContent = text;
+        document.getElementById('modalConfirm').onclick = () => {
+            onConfirm();
+            hideModal('confirmModal');
+        };
+        showModal('confirmModal');
+    }
 
-        // Modal Management
-        function showModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
-        }
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('data:application/javascript;base64,Y29uc3QgQ0FDSEVfTkFNRSA9ICdwdXR0aW5nLXRyYWNrZXItdjInOwpjb25zdCB1cmxzVG9DYWNoZSA9IFsnLi8nLCAnLi9pbmRleC5odG1sJ107CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2luc3RhbGwnLCBldmVudCA9PiB7CiAgZXZlbnQud2FpdFVudGlsKAogICAgY2FjaGVzLm9wZW4oQ0FDSEVfTkFNRSkudGhlbihjYWNoZSA9PiBjYWNoZS5hZGRBbGwodXJsc1RvQ2FjaGUpKQogICk7Cn0pOwoKc2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ZW50ID0+IHsKICBldmVudC5yZXNwb25kV2l0aCgKICAgIGNhY2hlcy5tYXRjaChldmVudC5yZXF1ZXN0KS50aGVuKHJlc3BvbnNlID0+IHsKICAgICAgcmV0dXJuIHJlc3BvbnNlIHx8IGZldGNoKGV2ZW50LnJlcXVlc3QpOwogICAgfSkKICApOwp9KTs=')
+            .catch(err => console.log('Service Worker registration failed'));
+    }
+</script>
+```
 
-        function hideModal(modalId) {
-            const modal = modalId ? document.getElementById(modalId) : document.querySelector('.modal-overlay:not(.hidden)');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        }
-
-        function showConfirmModal(title, text, onConfirm) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalText').textContent = text;
-            document.getElementById('modalConfirm').onclick = () => {
-                onConfirm();
-                hideModal('confirmModal');
-            };
-            showModal('confirmModal');
-        }
-
-        // Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('data:application/javascript;base64,Y29uc3QgQ0FDSEVfTkFNRSA9ICdwdXR0aW5nLXRyYWNrZXItdjInOwpjb25zdCB1cmxzVG9DYWNoZSA9IFsnLi8nLCAnLi9pbmRleC5odG1sJ107CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2luc3RhbGwnLCBldmVudCA9PiB7CiAgZXZlbnQud2FpdFVudGlsKAogICAgY2FjaGVzLm9wZW4oQ0FDSEVfTkFNRSkudGhlbihjYWNoZSA9PiBjYWNoZS5hZGRBbGwodXJsc1RvQ2FjaGUpKQogICk7Cn0pOwoKc2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ZW50ID0+IHsKICBldmVudC5yZXNwb25kV2l0aCgKICAgIGNhY2hlcy5tYXRjaChldmVudC5yZXF1ZXN0KS50aGVuKHJlc3BvbnNlID0+IHsKICAgICAgcmV0dXJuIHJlc3BvbnNlIHx8IGZldGNoKGV2ZW50LnJlcXVlc3QpOwogICAgfSkKICApOwp9KTs=')
-                .catch(err => console.log('Service Worker registration failed'));
-        }
-    </script>
 </body>
 </html>
