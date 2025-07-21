@@ -254,7 +254,7 @@
 
         .sessions-scroll {
             max-height: 200px;
-            overflow-y: auto;
+            overflow-y: hidden;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -465,7 +465,7 @@
             padding: 20px;
             padding-bottom: 80px;
             background: #FFFFFF;
-            overflow-y: auto;
+            overflow-y: hidden;
         }
 
         .button-grid {
@@ -594,24 +594,54 @@
         }
 
         /* Recent Sets */
-        .recent-sets {
-            background: #F5F5F5;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 16px;
-            max-height: 120px;
-            overflow-y: auto;
-        }
+/* Recent Sets */
+.recent-sets {
+    background: #F5F5F5;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
 
-        .recent-sets-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: #686A6C;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
+.recent-sets-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #686A6C;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
 
+#recentSetsList {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 4px;
+}
+
+/* Scrollbar styling for recent sets */
+#recentSetsList::-webkit-scrollbar {
+    width: 6px;
+}
+
+#recentSetsList::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+#recentSetsList::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+#recentSetsList::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
         .recent-set-item {
             display: flex;
             justify-content: space-between;
@@ -962,7 +992,7 @@
         <!-- Landing Page -->
         <div id="landingPage" class="page">
             <div class="header">
-                <span class="version">P2.0.1</span>
+                <span class="version">P2.0.2</span>
                 <h1>Putting Tracker</h1>
                 <button class="header-icon" id="settingsBtn">
                     <span class="settings-icon">⚙️</span>
@@ -1028,7 +1058,7 @@
         <!-- Active Session Page -->
         <div id="activeSessionPage" class="page hidden">
             <div class="header">
-                <span class="version">P2.0.1</span>
+                <span class="version">P2.0.2</span>
                 <h1>Active Session</h1>
                 <div class="header-icon">
                     <div class="sync-status online" id="sessionSyncStatus">●</div>
@@ -1091,7 +1121,7 @@
         <!-- Settings Page -->
         <div id="settingsPage" class="page hidden">
             <div class="header">
-                <span class="version">P2.0.1</span>
+                <span class="version">P2.0.2</span>
                 <h1>Settings</h1>
                 <button class="header-icon" id="closeSettingsBtn">
                     <span style="color: white; font-size: 24px;">×</span>
@@ -1166,7 +1196,7 @@
 
     <script>
         // Global State
-        const APP_VERSION = 'P2.0.1';
+        const APP_VERSION = 'P2.0.2';
         let currentUser = '';
         let users = [];
         let airtableConfig = null;
@@ -1921,20 +1951,24 @@
             document.getElementById('setsCount').textContent = activeSession.sets.length;
         }
 
-        function updateRecentSets() {
-            if (!activeSession || activeSession.sets.length === 0) {
-                document.getElementById('recentSetsList').innerHTML = '<div class="no-sets">No sets logged yet</div>';
-                return;
-            }
-            
-            const recentThree = activeSession.sets.slice(-3).reverse();
-            document.getElementById('recentSetsList').innerHTML = recentThree.map(set => `
-                <div class="recent-set-item">
-                    <span class="set-info">Set ${set.setNumber} • ${set.distance}ft</span>
-                    <span class="set-performance">${set.makes}/${set.putts} (${set.percentage}%)</span>
-                </div>
-            `).join('');
-        }
+   function updateRecentSets() {
+    if (!activeSession || activeSession.sets.length === 0) {
+        document.getElementById('recentSetsList').innerHTML = '<div class="no-sets">No sets logged yet</div>';
+        return;
+    }
+    
+    // Show all sets in reverse order (most recent first)
+    const allSets = activeSession.sets.slice().reverse();
+    document.getElementById('recentSetsList').innerHTML = allSets.map(set => `
+        <div class="recent-set-item">
+            <span class="set-info">Set ${set.setNumber} • ${set.distance}ft</span>
+            <span class="set-performance">${set.makes}/${set.putts} (${set.percentage}%)</span>
+        </div>
+    `).join('');
+    
+    // Auto-scroll to top to show the most recent set
+    document.getElementById('recentSetsList').scrollTop = 0;
+}
 
         function showSessionStats() {
             if (!activeSession) return;
