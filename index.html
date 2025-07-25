@@ -2237,16 +2237,20 @@ async function fetchFromAirtable() {
             link.click();
         }
 
-        function showClearDataConfirm() {
-            showConfirmModal(
-                'Clear All Data?',
-                'This will delete all local data. This cannot be undone!',
-                () => {
-                    localStorage.clear();
-                    location.reload();
-                }
-            );
+       function showClearDataConfirm() {
+    showConfirmModal(
+        'Clear All Data?',
+        'Are you sure you want to permanently delete all local data?',
+        () => {
+            localStorage.removeItem('puttingLogs');
+            localStorage.removeItem('activeSession');
+            updateStats();
+            updateChart();
+            loadRecentSessions();
+            hideModal();
         }
+    );
+}
 
         // Utilities
         function generateSessionId() {
