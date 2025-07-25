@@ -1021,7 +1021,7 @@
         <!-- Landing Page -->
         <div id="landingPage" class="page">
             <div class="header">
-                <span class="version">P2.0.3.1</span>
+                <span class="version">P2.0.3</span>
                 <h1>Putting Tracker</h1>
                 <button class="header-icon" id="settingsBtn">
                     <span class="settings-icon">⚙️</span>
@@ -1087,7 +1087,7 @@
         <!-- Active Session Page -->
         <div id="activeSessionPage" class="page hidden">
             <div class="header">
-                <span class="version">P2.0.3.1</span>
+                <span class="version">P2.0.3</span>
                 <h1>Active Session</h1>
                 <div class="header-icon">
                     <div class="sync-status online" id="sessionSyncStatus">●</div>
@@ -1150,7 +1150,7 @@
         <!-- Settings Page -->
         <div id="settingsPage" class="page hidden">
             <div class="header">
-                <span class="version">P2.0.3.1</span>
+                <span class="version">P2.0.3</span>
                 <h1>Settings</h1>
                 <button class="header-icon" id="closeSettingsBtn">
                     <span style="color: white; font-size: 24px;">×</span>
@@ -1228,7 +1228,7 @@
 
     <script>
         // Global State
-        const APP_VERSION = 'P2.0.3.1';
+        const APP_VERSION = 'P2.0.3';
         let currentUser = '';
         let users = [];
         let airtableConfig = null;
@@ -1611,52 +1611,33 @@
             });
         }
 
-async function fetchFromAirtable() {
-    if (!airtableConfig || !currentUser) return [];
-    
-    let allRecords = [];
-    let offset = null;
-    
-    // Keep fetching until we have all records
-    do {
-        let url = `https://api.airtable.com/v0/${airtableConfig.baseId}/${airtableConfig.tableName}?filterByFormula={User}="${currentUser}"`;
-        if (offset) {
-            url += `&offset=${offset}`;
-        }
-        
-        const response = await fetch(url, {
-            headers: {
-                'Authorization': `Bearer ${airtableConfig.token}`
+        async function fetchFromAirtable() {
+            if (!airtableConfig || !currentUser) return [];
+            
+            const url = `https://api.airtable.com/v0/${airtableConfig.baseId}/${airtableConfig.tableName}?filterByFormula={User}="${currentUser}"`;
+            
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${airtableConfig.token}`
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch from Airtable');
             }
-        });
-        
-        if (!response.ok) {
-            throw new Error('Failed to fetch from Airtable');
+            
+            const data = await response.json();
+            return data.records.map(record => ({
+                'Session ID': record.fields['Session ID'],
+                'User': record.fields.User,
+                'Distance': record.fields.Distance,
+                'Putts Per Set': record.fields['Putts Per Set'],
+                'Makes': record.fields.Makes,
+                'Date': record.fields.Date,
+                'Status': record.fields.Status,
+                'Make Percentage': record.fields['Make Percentage']
+            }));
         }
-        
-        const data = await response.json();
-        
-        // Add records from this page
-        const pageRecords = data.records.map(record => ({
-            'Session ID': record.fields['Session ID'],
-            'User': record.fields.User,
-            'Distance': record.fields.Distance,
-            'Putts Per Set': record.fields['Putts Per Set'],
-            'Makes': record.fields.Makes,
-            'Date': record.fields.Date,
-            'Status': record.fields.Status,
-            'Make Percentage': record.fields['Make Percentage']
-        }));
-        
-        allRecords = allRecords.concat(pageRecords);
-        
-        // Check if there are more pages
-        offset = data.offset;
-        
-    } while (offset);
-    
-    return allRecords;
-}
 
         function drawNoDataMessage(ctx, width, height) {
             ctx.fillStyle = '#9e9e9e';
@@ -1714,23 +1695,18 @@ async function fetchFromAirtable() {
                         sets: []
                     };
                 }
-            sessions[sessionId].sets.push({
-    			distance: log.Distance,
-   				makes: log.Makes,
-    			attempts: log['Putts Per Set'],
-    			percentage: Math.round((log.Makes / log['Putts Per Set']) * 100),
-   				date: new Date(log.Date)  // Add the date for sorting
-			});
+                sessions[sessionId].sets.push({
+                    distance: log.Distance,
+                    makes: log.Makes,
+                    attempts: log['Putts Per Set'],
+                    percentage: Math.round((log.Makes / log['Putts Per Set']) * 100)
+                });
+            });
             
-            // Sort sets within each session by date (oldest first)
-			Object.values(sessions).forEach(session => {
-  			  		session.sets.sort((a, b) => a.date - b.date);
-			});
-
-			// Sort sessions by date (newest first)
-			const sortedSessions = Object.values(sessions)
-  			 	.sort((a, b) => new Date(b.date) - new Date(a.date))
-   				.slice(0, 10);
+            // Sort sessions by date
+            const sortedSessions = Object.values(sessions)
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 10);
             
             container.innerHTML = sortedSessions.map(session => {
                 // Calculate session summary
@@ -2237,20 +2213,16 @@ async function fetchFromAirtable() {
             link.click();
         }
 
-       function showClearDataConfirm() {
-    showConfirmModal(
-        'Clear All Data?',
-        'Are you sure you want to permanently delete all local data?',
-        () => {
-            localStorage.removeItem('puttingLogs');
-            localStorage.removeItem('activeSession');
-            updateStats();
-            updateChart();
-            loadRecentSessions();
-            hideModal();
+        function showClearDataConfirm() {
+            showConfirmModal(
+                'Clear All Data?',
+                'This will delete all local data. This cannot be undone!',
+                () => {
+                    localStorage.clear();
+                    location.reload();
+                }
+            );
         }
-    );
-}
 
         // Utilities
         function generateSessionId() {
