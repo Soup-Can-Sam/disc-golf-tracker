@@ -1021,7 +1021,7 @@
         <!-- Landing Page -->
         <div id="landingPage" class="page">
             <div class="header">
-                <span class="version">P2.0.3.2</span>
+                <span class="version">p2.0.3.3</span>
                 <h1>Putting Tracker</h1>
                 <button class="header-icon" id="settingsBtn">
                     <span class="settings-icon">⚙️</span>
@@ -1087,7 +1087,7 @@
         <!-- Active Session Page -->
         <div id="activeSessionPage" class="page hidden">
             <div class="header">
-                <span class="version">P2.0.3.2</span>
+                <span class="version">p2.0.3.3</span>
                 <h1>Active Session</h1>
                 <div class="header-icon">
                     <div class="sync-status online" id="sessionSyncStatus">●</div>
@@ -1150,7 +1150,7 @@
         <!-- Settings Page -->
         <div id="settingsPage" class="page hidden">
             <div class="header">
-                <span class="version">P2.0.3.2</span>
+                <span class="version">p2.0.3.3</span>
                 <h1>Settings</h1>
                 <button class="header-icon" id="closeSettingsBtn">
                     <span style="color: white; font-size: 24px;">×</span>
@@ -1228,7 +1228,7 @@
 
     <script>
         // Global State
-        const APP_VERSION = 'P2.0.3.2';
+        const APP_VERSION = 'p2.0.3.3';
         let currentUser = '';
         let users = [];
         let airtableConfig = null;
@@ -2314,11 +2314,307 @@
             showModal('confirmModal');
         }
 
-        // Service Worker
+        // Robust PWA Update System
+        let updateAvailable = false;
+        let deferredPrompt = null;
+
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('data:application/javascript;base64,Y29uc3QgQ0FDSEVfTkFNRSA9ICdwdXR0aW5nLXRyYWNrZXItdjInOwpjb25zdCB1cmxzVG9DYWNoZSA9IFsnLi8nLCAnLi9pbmRleC5odG1sJ107CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2luc3RhbGwnLCBldmVudCA9PiB7CiAgZXZlbnQud2FpdFVudGlsKAogICAgY2FjaGVzLm9wZW4oQ0FDSEVfTkFNRSkudGhlbihjYWNoZSA9PiBjYWNoZS5hZGRBbGwodXJsc1RvQ2FjaGUpKQogICk7Cn0pOwoKc2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ZW50ID0+IHsKICBldmVudC5yZXNwb25kV2l0aCgKICAgIGNhY2hlcy5tYXRjaChldmVudC5yZXF1ZXN0KS50aGVuKHJlc3BvbnNlID0+IHsKICAgICAgcmV0dXJuIHJlc3BvbnNlIHx8IGZldGNoKGV2ZW50LnJlcXVlc3QpOwogICAgfSkKICApOwp9KTs=')
-                .catch(err => console.log('Service Worker registration failed'));
+            registerServiceWorker();
         }
+
+        // Handle install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallButton();
+        });
+
+        async function registerServiceWorker() {
+            try {
+                const registration = await navigator.serviceWorker.register(generateServiceWorker());
+                
+                // Check for updates every 30 seconds when app is active
+                setInterval(() => {
+                    if (document.visibilityState === 'visible') {
+                        registration.update();
+                    }
+                }, 30000);
+
+                // Handle service worker updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            updateAvailable = true;
+                            showUpdateNotification();
+                        }
+                    });
+                });
+
+                // Handle waiting service worker
+                if (registration.waiting) {
+                    updateAvailable = true;
+                    showUpdateNotification();
+                }
+
+                console.log('Service Worker registered successfully');
+            } catch (error) {
+                console.error('Service Worker registration failed:', error);
+            }
+        }
+
+        function generateServiceWorker() {
+            const swCode = `
+                const CACHE_NAME = 'putting-tracker-${APP_VERSION}';
+                const CACHE_VERSION = '${Date.now()}';
+                const urlsToCache = [
+                    './',
+                    './index.html'
+                ];
+
+                // Install event - cache resources
+                self.addEventListener('install', event => {
+                    console.log('SW: Install event');
+                    event.waitUntil(
+                        caches.open(CACHE_NAME).then(cache => {
+                            console.log('SW: Caching resources');
+                            return cache.addAll(urlsToCache);
+                        }).then(() => {
+                            console.log('SW: Skip waiting');
+                            return self.skipWaiting();
+                        })
+                    );
+                });
+
+                // Activate event - clean up old caches
+                self.addEventListener('activate', event => {
+                    console.log('SW: Activate event');
+                    event.waitUntil(
+                        caches.keys().then(cacheNames => {
+                            return Promise.all(
+                                cacheNames.map(cacheName => {
+                                    if (cacheName !== CACHE_NAME && cacheName.startsWith('putting-tracker-')) {
+                                        console.log('SW: Deleting old cache:', cacheName);
+                                        return caches.delete(cacheName);
+                                    }
+                                })
+                            );
+                        }).then(() => {
+                            console.log('SW: Claiming clients');
+                            return self.clients.claim();
+                        })
+                    );
+                });
+
+                // Fetch event - serve from cache with network fallback
+                self.addEventListener('fetch', event => {
+                    if (event.request.method !== 'GET') return;
+                    
+                    event.respondWith(
+                        caches.match(event.request).then(response => {
+                            if (response) {
+                                // Serve from cache, but also fetch in background for next time
+                                fetch(event.request).then(fetchResponse => {
+                                    if (fetchResponse && fetchResponse.status === 200) {
+                                        const responseClone = fetchResponse.clone();
+                                        caches.open(CACHE_NAME).then(cache => {
+                                            cache.put(event.request, responseClone);
+                                        });
+                                    }
+                                }).catch(() => {
+                                    // Network failed, but we have cache
+                                });
+                                return response;
+                            }
+                            
+                            // Not in cache, fetch from network
+                            return fetch(event.request).then(fetchResponse => {
+                                if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
+                                    return fetchResponse;
+                                }
+                                
+                                const responseToCache = fetchResponse.clone();
+                                caches.open(CACHE_NAME).then(cache => {
+                                    cache.put(event.request, responseToCache);
+                                });
+                                
+                                return fetchResponse;
+                            });
+                        })
+                    );
+                });
+
+                // Message event - handle update requests
+                self.addEventListener('message', event => {
+                    if (event.data && event.data.type === 'SKIP_WAITING') {
+                        self.skipWaiting();
+                    }
+                });
+            `;
+            
+            return 'data:application/javascript;charset=utf-8,' + encodeURIComponent(swCode);
+        }
+
+        function showUpdateNotification() {
+            if (document.getElementById('updateNotification')) return; // Already showing
+            
+            const notification = document.createElement('div');
+            notification.id = 'updateNotification';
+            notification.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #1a237e;
+                    color: white;
+                    padding: 16px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    z-index: 10000;
+                    max-width: 350px;
+                    text-align: center;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    animation: slideDown 0.3s ease-out;
+                ">
+                    <div style="margin-bottom: 12px; font-weight: 600;">
+                        🚀 New version available!
+                    </div>
+                    <div style="margin-bottom: 16px; font-size: 14px; opacity: 0.9;">
+                        Tap to update and get the latest features
+                    </div>
+                    <button onclick="applyUpdate()" style="
+                        background: #ff5722;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 6px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        margin-right: 8px;
+                    ">Update Now</button>
+                    <button onclick="dismissUpdate()" style="
+                        background: transparent;
+                        color: white;
+                        border: 1px solid rgba(255,255,255,0.3);
+                        padding: 10px 20px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                    ">Later</button>
+                </div>
+                <style>
+                    @keyframes slideDown {
+                        from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+                        to { transform: translateX(-50%) translateY(0); opacity: 1; }
+                    }
+                </style>
+            `;
+            document.body.appendChild(notification);
+        }
+
+        function showInstallButton() {
+            // Add install button to settings if not already there
+            if (document.getElementById('installBtn')) return;
+            
+            const settingsSection = document.querySelector('.settings-section');
+            if (settingsSection) {
+                const installBtn = document.createElement('button');
+                installBtn.id = 'installBtn';
+                installBtn.className = 'settings-btn';
+                installBtn.textContent = '📱 Install App';
+                installBtn.style.background = '#4CAF50';
+                installBtn.onclick = installApp;
+                settingsSection.appendChild(installBtn);
+            }
+        }
+
+        async function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const result = await deferredPrompt.userChoice;
+                if (result.outcome === 'accepted') {
+                    console.log('User installed the app');
+                    document.getElementById('installBtn')?.remove();
+                }
+                deferredPrompt = null;
+            }
+        }
+
+        window.applyUpdate = function() {
+            const notification = document.getElementById('updateNotification');
+            if (notification) {
+                notification.remove();
+            }
+            
+            // Show loading state
+            const loadingNotification = document.createElement('div');
+            loadingNotification.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #1a237e;
+                    color: white;
+                    padding: 16px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    z-index: 10000;
+                    text-align: center;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                ">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+                        <div style="
+                            width: 20px;
+                            height: 20px;
+                            border: 2px solid rgba(255,255,255,0.3);
+                            border-top: 2px solid white;
+                            border-radius: 50%;
+                            animation: spin 1s linear infinite;
+                        "></div>
+                        <span>Updating app...</span>
+                    </div>
+                </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            `;
+            document.body.appendChild(loadingNotification);
+            
+            // Tell service worker to skip waiting
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+            }
+            
+            // Listen for the new service worker to take control
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            });
+        };
+
+        window.dismissUpdate = function() {
+            const notification = document.getElementById('updateNotification');
+            if (notification) {
+                notification.style.animation = 'slideUp 0.3s ease-out forwards';
+                setTimeout(() => notification.remove(), 300);
+            }
+        };
+
+        // Check for updates when app becomes visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && 'serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistration().then(registration => {
+                    if (registration) {
+                        registration.update();
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
